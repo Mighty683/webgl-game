@@ -39,8 +39,6 @@ export class Renderer {
         switch(field.type) {
             case 'air':
                 return '#0E7B19';
-            case 'entity':
-                return '#D33F49'; 
             case 'solid':
             default:
                 return '#363946'
@@ -52,10 +50,22 @@ export class Renderer {
         return [y1, x1, this.fieldSize, this.fieldSize];
     }
     renderField(x: number, y: number, field: ArenaField) {
-        console.log(this.getFieldBackground(field));
         this.c.beginPath();
         this.c.fillStyle = this.getFieldBackground(field);
         this.c.fillRect(...this.getFieldRect(x, y));
         this.c.closePath();
+        if (field.elements?.size > 0) {
+            field.elements.forEach((element) => {
+                if (element.sprite) {
+                    // TODO: Drawing sprites
+                }
+                if (element.color) {
+                    this.c.beginPath();
+                    this.c.fillStyle = element.color;
+                    this.c.fillRect(...this.getFieldRect(x, y));
+                    this.c.closePath();
+                }
+            })
+        }
     }
 }

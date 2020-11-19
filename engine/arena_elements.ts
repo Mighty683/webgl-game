@@ -1,8 +1,8 @@
 export class ArenaField {
-    elements: Array<ArenaElement>
+    elements: Set<ArenaElement>
     type: ArenaElementType
     constructor (type?: ArenaElementType) {
-        this.elements = new Array();
+        this.elements = new Set();
         this.type = type;
     }
     setType (type: ArenaElementType) {
@@ -10,8 +10,13 @@ export class ArenaField {
     }
 }
 
-export type ArenaElementType = 'solid' | 'entity' | 'air'
+export type ArenaElementType = 'solid' | 'air'
 
 export class ArenaElement {
-    sprite: string
+    sprite?: string
+    color?: string
+}
+
+export class Player extends ArenaElement {
+
 }
