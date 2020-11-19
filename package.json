@@ -1,0 +1,25 @@
+{
+  "name": "@migum/webgl-game",
+  "version": "1.0.0",
+  "description": " ",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel serve index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mighty683/webgl-game.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mighty683/webgl-game/issues"
+  },
+  "homepage": "https://github.com/Mighty683/webgl-game#readme",
+  "dependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.5"
+  }
+}
