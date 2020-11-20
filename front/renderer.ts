@@ -1,5 +1,5 @@
-import { Arena, ARENA_HEIGHT, ARENA_WIDTH } from "./arena";
-import { ArenaField } from "./arena_elements";
+import { Arena, ARENA_HEIGHT, ARENA_WIDTH } from "../common/arena";
+import { ArenaField } from "../common/arena_elements";
 
 export class Renderer {
     canvas: HTMLCanvasElement
@@ -54,7 +54,7 @@ export class Renderer {
         this.c.fillStyle = this.getFieldBackground(field);
         this.c.fillRect(...this.getFieldRect(x, y));
         this.c.closePath();
-        if (field.elements?.size > 0) {
+        if (field.elements?.length > 0) {
             field.elements.forEach((element) => {
                 if (element.sprite) {
                     // TODO: Drawing sprites

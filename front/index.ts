@@ -1,4 +1,4 @@
-import { Engine } from "../engine";
+import { Engine } from "./engine";
 
 let gameCanvas = document.getElementById('game');
 new Engine(gameCanvas as HTMLElement);
