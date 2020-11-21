@@ -1,6 +1,11 @@
-import { ArenaElement, Player } from "../common/arena_elements";
-import { CenterCoordinates } from "../common/types";
+import { ArenaElement, Player } from "../../common/arena_elements";
+import { CenterCoordinates } from "../../common/types";
 
+export type GameState = {
+    hp: number,
+    id: string,
+    playerId: string
+}
 export class Renderer {
     canvas: HTMLCanvasElement
     c: CanvasRenderingContext2D
@@ -15,11 +20,17 @@ export class Renderer {
         this.c = canvas.getContext('2d') as CanvasRenderingContext2D;
         this.fillBackground()
     }
-    fillBackground() {
+    fillBackground(state?: GameState) {
         this.c.beginPath();
         this.c.rect(0, 0, this.width, this.height);
         this.c.fillStyle = '#000000';
         this.c.fill();
+        if (state) {
+            this.c.fillStyle = '#FFFFFF';
+            this.c.fillText(`GAME ID: ${state.id}`, 0, 20);
+            this.c.fillText(`PLAYER ID: ${state.playerId}`, 0, 40);
+            this.c.fillText(`HP: ${state.hp}`, 0, 60);
+        }
         this.c.closePath();
     }
     getFieldRect(center: CenterCoordinates,x: number, y: number): [number, number, number, number] {
@@ -30,8 +41,8 @@ export class Renderer {
         let y1 = centerY - ((y - center.y) * fieldSize);
         return [x1, y1, fieldSize, fieldSize];
     }
-    renderArena(center: CenterCoordinates, elements: Array<ArenaElement>) {
-        this.fillBackground();
+    renderArena(center: CenterCoordinates, elements: Array<ArenaElement>, state?: GameState) {
+        this.fillBackground(state);
         elements.forEach(el => {
             if (el.color) {
                 this.c.beginPath();

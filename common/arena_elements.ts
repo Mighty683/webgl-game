@@ -6,6 +6,7 @@ export interface ArenaElement {
     type: String
     active: boolean
     canMoveHere: boolean
+    hp?: number
     x: number
     y: number
     id?: string
@@ -57,33 +58,5 @@ export class Player implements ArenaElement {
         if (this.hp <= 0) {
             this.active = false;
         }
-    }
-}
-
-export class AreaSpell implements ArenaElement {
-    x: number
-    y: number
-    duration: number;
-    damage: number;
-    color: string;
-    type = 'area_spell'
-    active: boolean
-    canMoveHere = true;
-    constructor (x: number, y: number, duration: number, damage: number, color: string) {
-        this.color = color;
-        this.x = x;
-        this.y = y;
-        this.duration = duration;
-        this.damage = damage;
-        this.active = true;
-    }
-    onTick() {
-        this.duration = this.duration - 1;
-        if (this.duration <= 0) {
-            this.active = false;
-        }
-    }
-    playerEffect(player: Player) {
-        player.reduceHp(this.damage);
     }
 }

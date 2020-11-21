@@ -1,6 +1,6 @@
-import { ArenaElement } from "../common/arena_elements";
-import { Direction } from "../common/types";
-import { CastSpell, MovePlayer, RefreshState, SERVER_COMMAND } from "../common/websocket_messages";
+import { ArenaElement } from "../../common/arena_elements";
+import { Direction } from "../../common/types";
+import { CastSpell, CreateGame, JoinGame, MovePlayer, RefreshState, SERVER_COMMAND } from "../../common/websocket_messages";
 import { Renderer } from "./renderer";
 const HEIGHT = 600;
 const WIDTH = 1200;
@@ -10,7 +10,7 @@ export class Engine {
     renderer: Renderer
     ws: WebSocket
     playerId?: string
-    constructor (rootEl: HTMLElement) {
+    constructor (rootEl: HTMLElement, gameId: string) {
         let canvasElement = document.createElement('canvas');
         rootEl.appendChild(canvasElement);
         this.renderer = new Renderer(canvasElement, HEIGHT, WIDTH);
@@ -23,11 +23,31 @@ export class Engine {
                         this.setPlayerId(cmd.id);
                     break;
                     case 'refresh_state':
-                        this.refreshArena((cmd as RefreshState).elements);
+                        this.refreshArena((cmd as RefreshState).elements, (cmd as RefreshState).id);
                     break;
                 }
             });
+            if (gameId) {
+                this.joinGame(gameId);
+            } else {
+                this.createGame();
+            }
         });
+    }
+
+    createGame() {
+        let createGameCommand: CreateGame = {
+            cmd: 'create_game'
+        };
+        this.ws.send(JSON.stringify(createGameCommand));
+    }
+
+    joinGame(gameId: string) {
+        let createGameCommand: JoinGame = {
+            cmd: 'join_game',
+            id: gameId
+        };
+        this.ws.send(JSON.stringify(createGameCommand));
     }
 
     setPlayerId(id: string) {
@@ -72,11 +92,15 @@ export class Engine {
         this.ws.send(JSON.stringify(cmd));
     }
 
-    refreshArena(elements: Array<ArenaElement>) {
+    refreshArena(elements: Array<ArenaElement>, gameId: string) {
         if (this.playerId) {
             let player = elements.find(el => el.id === this.playerId)
             if (player) {
-                this.renderer.renderArena({ x: player.x, y: player.y }, elements);
+                this.renderer.renderArena({ x: player.x, y: player.y }, elements, {
+                    id: gameId,
+                    hp: player.hp || 0,
+                    playerId: player.id || ''
+                });
             }
         }
     }

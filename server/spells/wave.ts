@@ -1,5 +1,5 @@
-import { AreaSpell } from "../../common/arena_elements";
 import { Direction, Element } from "../../common/types";
+import { AreaSpell } from "./areaSpell";
 import { getElementColor } from "./elementsHelper";
 const DMG = 50;
 const DURATION = 1;

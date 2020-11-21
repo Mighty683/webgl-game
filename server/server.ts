@@ -1,51 +1,66 @@
 import WebSocket from "ws";
-import { CastSpell, MovePlayer, PlayerCommand, RefreshState, SERVER_COMMAND, SetPlayerId } from "../common/websocket_messages";
+import { CastSpell, JoinGame, MovePlayer, PlayerCommand, RefreshState, SERVER_COMMAND, SetPlayerId } from "../common/websocket_messages";
 import { Game } from "./game";
+import { PlayerSocket } from "./playerSocket";
 
-const TICK_TIME = 300;
 export class Server {
-    game: Game
+    games: Array<Game>
+    players: Array<PlayerSocket>
     server: WebSocket.Server
-    interval?: NodeJS.Timeout
     constructor() {
-        this.game = new Game();
+        this.games = new Array();
+        this.players = new Array();
         this.server = new WebSocket.Server({
             port: 8080,
             host: 'localhost'
         });
         this.server.on('connection', this.initPlayerSocket.bind(this));
-        this.initGame();
     }
     initPlayerSocket(socket: WebSocket) {
-        let player = this.game.placePlayer(0,0);
-        let initCommand: SetPlayerId = {
-            cmd: 'set_player_id',
-            id: player.id
-        }
-        socket.send(JSON.stringify(initCommand));
+        let player = new PlayerSocket(socket);
+        this.players.push();
         socket.on('message', (message) => {
             let cmd = JSON.parse(message.toString()) as PlayerCommand;
             switch(cmd.cmd) {
+                case 'create_game':
+                    this.createGame(player).initGame();
+                    break;
+                case 'join_game':
+                    let game = this.games.find(g => g.id === (cmd as JoinGame).id)
+                    game && this.joinPlayerToGame(game, player);
+                    game?.initGame();
+                    break;
+            }
+        })
+    }
+    createGame(player: PlayerSocket) {
+        let game =new Game();
+        this.games.push(game);
+        this.joinPlayerToGame(game, player);
+        return game;
+    }
+    joinPlayerToGame(game: Game, player: PlayerSocket) {
+        let gamePlayer = game.placePlayer(0,0, player);
+        player.setPlayer(gamePlayer);
+        let initCommand: SetPlayerId = {
+            cmd: 'set_player_id',
+            id: gamePlayer.id
+        }
+        player.socket.send(JSON.stringify(initCommand));
+        player.socket.on('message', (message) => {
+            let cmd = JSON.parse(message.toString()) as PlayerCommand;
+            switch(cmd.cmd) {
                 case 'move_player':
-                    this.game.movePlayer(player, (cmd as MovePlayer).direction);
+                    game.movePlayer(gamePlayer, (cmd as MovePlayer).direction);
+                    break;
                 case 'cast_spell':
-                    this.game.castSpell(player, (cmd as CastSpell).spell);
+                    game.castSpell(gamePlayer, (cmd as CastSpell).spell);
+                    break;
             };
         });
-        socket.on('close', () => {
-            this.game.removeElement(player);
+        player.socket.on('close', () => {
+            game.removeElement(gamePlayer);
+            this.players.splice(this.players.indexOf(player), 1);
         });
-    }
-    initGame() {
-        this.interval = setInterval(() => {
-            this.server.clients.forEach((client) => {
-                let cmd: RefreshState = {
-                    cmd: 'refresh_state',
-                    elements: this.game.elements
-                }
-                client.send(JSON.stringify(cmd));
-            });
-            this.game.gameTick();
-        }, TICK_TIME);
     }
 }

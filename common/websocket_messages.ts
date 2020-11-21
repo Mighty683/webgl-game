@@ -16,14 +16,26 @@ export type CastSpell = {
   spell: string
 }
 
+export type CreateGame = {
+  cmd: 'create_game'
+}
+
+export type JoinGame = {
+  cmd: 'join_game'
+  id: string
+}
+
 export type PlayerCommand = MovePlayer
-  | CastSpell;
+  | CastSpell
+  | JoinGame
+  | CreateGame
 
 /**
  * Server commands
  */
 export type RefreshState = {
   cmd: 'refresh_state'
+  id: string
   elements: Array<ArenaElement>
 }
 

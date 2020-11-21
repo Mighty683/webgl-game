@@ -1,12 +1,22 @@
+import Crypto from 'crypto';
 import { ArenaElement, Player } from "../common/arena_elements";
 import { Direction } from "../common/types";
+import { RefreshState } from "../common/websocket_messages";
+import { PlayerSocket } from "./playerSocket";
 import { getFieldElements } from "./spells/field";
 import { getWaveElements } from "./spells/wave";
 
+const TICK_TIME = 300;
 export class Game {
     elements: Array<ArenaElement>
+    interval?: NodeJS.Timeout
+    playersSockets: Array<PlayerSocket>
+    id: string
     constructor () {
         this.elements = new Array();
+        this.playersSockets = new Array();
+        // TODO: Proper id generation
+        this.id = Math.random().toString(36).substr(0, 6);
     }
     movePlayer(player: Player, direction: Direction) {
         if (player.active && !player.moved) {
@@ -29,11 +39,6 @@ export class Game {
     checkMove(player: Player, x: number, y: number): boolean {
         // Any solid object on coordinate prevents move
         return !this.elements.find(e => player !== e && e.x === x && e.y === y && !e.canMoveHere)
-    }
-    placePlayer(x: number, y: number) {
-        let player = new Player(x,y, Date.now().toString())
-        this.elements.push(player);
-        return player;
     }
     castSpell(player: Player, spell: string) {
         if (player.active) {
@@ -62,8 +67,35 @@ export class Game {
     }
     gameTick() {
         this.elements.forEach(el => {
+            this.playersSockets.forEach(playerSocket => {
+                if (playerSocket.player === el) {
+                    return;
+                }
+                if (playerSocket.player?.x === el.x && playerSocket.player.y === el.y) {
+                    el.playerEffect && el.playerEffect(playerSocket.player)
+                }
+            })
             el.onTick && el.onTick();
         });
         this.elements = this.elements.filter(el => el.active);
+    }
+    placePlayer(x: number, y: number, playerSocket: PlayerSocket) {
+        let gamePlayer = new Player(x,y, Date.now().toString())
+        this.playersSockets.push(playerSocket);
+        this.elements.push(gamePlayer);
+        return gamePlayer;
+    }
+    initGame() {
+        this.interval = setInterval(() => {
+            this.playersSockets.forEach(player => {
+                let cmd: RefreshState = {
+                    cmd: 'refresh_state',
+                    id: this.id,
+                    elements: this.elements
+                }
+                this.gameTick();
+                player.socket.send(JSON.stringify(cmd));
+            });
+        }, TICK_TIME);
     }
 }
