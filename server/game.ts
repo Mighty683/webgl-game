@@ -45,7 +45,9 @@ export class GameServer {
     }
     placePlayer(x: number, y: number) {
         // TODO: Generate hash instead of date.
-        this.players.add(new Player(x,y, Date.now().toString()));
+        let player = new Player(x,y, Date.now().toString())
+        this.players.add(player);
+        return player;
     }
     generateFullArena() {
         let arena = generateNewArena();

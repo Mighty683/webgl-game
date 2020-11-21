@@ -1,7 +1,7 @@
 export class ArenaField {
     elements: Array<ArenaElement>
     type: ArenaElementType
-    constructor (type?: ArenaElementType) {
+    constructor (type: ArenaElementType) {
         this.elements = new Array();
         this.type = type;
     }
