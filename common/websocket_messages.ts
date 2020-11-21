@@ -1,6 +1,5 @@
-import { ArenaElement, Player } from "./arena_elements";
-import { CenterCoordinates, Direction } from "./types";
-
+import { ArenaElement } from "../server/arenaElement"
+import { Direction } from "./types"
 
 /**
  * Player commands

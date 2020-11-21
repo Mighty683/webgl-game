@@ -1,7 +1,7 @@
-import Crypto from 'crypto';
-import { ArenaElement, Player } from "../common/arena_elements";
 import { Direction } from "../common/types";
 import { RefreshState } from "../common/websocket_messages";
+import { ArenaElement } from "./arenaElement";
+import { Player } from "./player";
 import { PlayerSocket } from "./playerSocket";
 import { getFieldElements } from "./spells/field";
 import { getWaveElements } from "./spells/wave";

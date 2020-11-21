@@ -1,18 +1,5 @@
-import { Direction } from "./types";
-
-export interface ArenaElement {
-    sprite?: string
-    color?: string
-    type: String
-    active: boolean
-    canMoveHere: boolean
-    hp?: number
-    x: number
-    y: number
-    id?: string
-    onTick?: () => void
-    playerEffect?: (player: Player) => void
-}
+import { Direction } from "../common/types"
+import { ArenaElement } from "./arenaElement"
 
 export class Player implements ArenaElement {
     x: number
