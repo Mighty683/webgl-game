@@ -23,6 +23,9 @@ export class Server {
                         this.game.movePlayer(player, (cmd as MOVE_PLAYER).direction);
                 };
             });
+            socket.on('close', () => {
+                this.game.removePlayer(player);
+            })
         });
     }
 

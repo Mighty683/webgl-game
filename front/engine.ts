@@ -29,7 +29,6 @@ export class Engine {
     }
 
     keyboardListener (event: KeyboardEvent) {
-        console.log('Pressed: ', event.key);
         switch (event.key) {
             case 'ArrowDown':
                 return this.movePlayer('down');

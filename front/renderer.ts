@@ -24,7 +24,7 @@ export class Renderer {
         this.c.closePath();
     }
 
-    consoleArena(arena: Arena) {
+    consoleArenaState(arena: Arena) {
         console.log(arena?.rows.map(row => {
             return row.map(el => {
                 return el.elements.find(el => el.type === 'player') ? 'X' : ' '

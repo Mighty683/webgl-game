@@ -50,10 +50,12 @@ export class GameServer {
         this.players.add(player);
         return player;
     }
+    removePlayer(player: Player) {
+        this.players.delete(player);
+    }
     generateFullArena() {
         let arena = generateNewArena();
         this.players.forEach(player => {
-            console.log(player.x, player.y);
             arena.rows[player.y][player.x].elements.push(player);
         });
         return arena;
