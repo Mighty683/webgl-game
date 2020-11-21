@@ -8,14 +8,14 @@ export function getWaveElements(x: number, y: number, direction: Direction, type
   let elements: Array<AreaSpell> = new Array();
   switch(direction) {
     case 'down':
-      elements.push(new AreaSpell(x, y + 1, DURATION, DMG, getElementColor(type)));
-      elements.push(new AreaSpell(x, y + 2, DURATION, DMG, getElementColor(type)));
-      elements.push(new AreaSpell(x, y + 3, DURATION, DMG, getElementColor(type)));
-      break;
-    case 'up':
       elements.push(new AreaSpell(x, y - 1, DURATION, DMG, getElementColor(type)));
       elements.push(new AreaSpell(x, y - 2, DURATION, DMG, getElementColor(type)));
       elements.push(new AreaSpell(x, y - 3, DURATION, DMG, getElementColor(type)));
+      break;
+    case 'up':
+      elements.push(new AreaSpell(x, y + 1, DURATION, DMG, getElementColor(type)));
+      elements.push(new AreaSpell(x, y + 2, DURATION, DMG, getElementColor(type)));
+      elements.push(new AreaSpell(x, y + 3, DURATION, DMG, getElementColor(type)));
       break;
     case 'left':
       elements.push(new AreaSpell(x - 1 , y, DURATION, DMG, getElementColor(type)));
