@@ -10,7 +10,7 @@ POC of small multi-player game. Where players fight on small area.
 
 ### Server
 
-Server is based on websockets only it's place where game logic is placed.
+Server is based on web-sockets only it's place where game logic is placed.
 
 ### Front-end
 
@@ -27,7 +27,7 @@ Commands:
   - Allow multiple players join game
 - Webgl now I used simpler in usage canvas.
 - Refactor game logic.
-  - Better colition detection.
+  - Better collision detection.
   - Remove single function loop pattern
   - Introduce events?
 - Add layout around game.
