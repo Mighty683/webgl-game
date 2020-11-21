@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel serve index.html",
-    "start-server": "nodemon --watch './server**/*.ts' --exec 'ts-node' ./server/index.ts"
+    "start-server": "nodemon --watch './server/**/*.ts' --exec 'ts-node' ./server/index.ts"
   },
   "repository": {
     "type": "git",

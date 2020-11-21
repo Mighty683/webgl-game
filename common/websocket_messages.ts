@@ -5,16 +5,24 @@ import { Direction } from "./types";
 /**
  * Player commands
  */
-export type MOVE_PLAYER = {
+export type MovePlayer = {
   cmd: 'move_player'
   direction: Direction
 }
 
-export type INIT_GAME = {
+
+export type CastSpell = {
+  cmd: 'cast_spell'
+  spell: string
+}
+
+export type InitGame = {
   cmd: 'init_game'
 }
 
-export type PLAYER_COMMAND = MOVE_PLAYER | INIT_GAME;
+export type PlayerCommand = MovePlayer
+  | InitGame
+  | CastSpell;
 
 /**
  * Server commands

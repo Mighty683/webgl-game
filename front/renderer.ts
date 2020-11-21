@@ -27,7 +27,13 @@ export class Renderer {
     consoleArenaState(arena: Arena) {
         console.log(arena?.rows.map(row => {
             return row.map(el => {
-                return el.elements.find(el => el.type === 'player') ? 'X' : ' '
+                if (!el.elements.length) {
+                    return ' ';
+                } else if (el.elements.find(el => el.type === 'player')) {
+                    return 'X';
+                } else {
+                    return 'Y';
+                }
             }).join('');
         }).join('\n'));
     }
@@ -37,6 +43,7 @@ export class Renderer {
                 this.renderField(rowIndex, fieldIndex, field);
             })
         });
+        // this.consoleArenaState(arena);
     }
     getFieldBackground(field: ArenaField): string {
         switch(field.type) {

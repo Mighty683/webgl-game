@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { MOVE_PLAYER, PLAYER_COMMAND, SERVER_COMMAND } from "../common/websocket_messages";
+import { CastSpell, MovePlayer, PlayerCommand, SERVER_COMMAND } from "../common/websocket_messages";
 import { GameServer } from "./game";
 
 export class Server {
@@ -15,12 +15,14 @@ export class Server {
         this.server.on('connection', (socket) => {
             let player = this.game.placePlayer(0,7);
             socket.on('message', (message) => {
-                let cmd = JSON.parse(message.toString()) as PLAYER_COMMAND;
+                let cmd = JSON.parse(message.toString()) as PlayerCommand;
                 switch(cmd.cmd) {
                     case 'init_game':
                         this.initGame();
                     case 'move_player':
-                        this.game.movePlayer(player, (cmd as MOVE_PLAYER).direction);
+                        this.game.movePlayer(player, (cmd as MovePlayer).direction);
+                    case 'cast_spell':
+                        this.game.castSpell(player, (cmd as CastSpell).spell);
                 };
             });
             socket.on('close', () => {
@@ -33,7 +35,7 @@ export class Server {
         this.interval = setInterval(() => {
             this.broadcast({
                 cmd: 'refresh_state',
-                arena: this.game.generateFullArena()
+                arena: this.game.gameTick()
             });
             this.game.unlockPlayers();
         }, 500);

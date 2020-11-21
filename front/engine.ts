@@ -1,6 +1,6 @@
 import { Arena } from "../common/arena";
 import { Direction } from "../common/types";
-import { INIT_GAME, MOVE_PLAYER, SERVER_COMMAND } from "../common/websocket_messages";
+import { CastSpell, InitGame, MovePlayer, SERVER_COMMAND } from "../common/websocket_messages";
 import { Renderer } from "./renderer";
 const HEIGHT = 600;
 const WIDTH = 1200;
@@ -38,11 +38,23 @@ export class Engine {
                 return this.movePlayer('left');
             case 'ArrowRight':
                 return this.movePlayer('right');
+            case 'a':
+                return this.castSpell('fire_wave');
+            case 's':
+                return this.castSpell('ice_wave');
         }
     }
 
+    castSpell(spell: string) {
+        let cmd: CastSpell = {
+            cmd: 'cast_spell',
+            spell,
+        }
+        this.ws.send(JSON.stringify(cmd));
+    }
+
     movePlayer(direction: Direction) {
-        let cmd: MOVE_PLAYER = {
+        let cmd: MovePlayer = {
             cmd: 'move_player',
             direction,
         }
@@ -54,7 +66,7 @@ export class Engine {
     }
 
     initGame() {
-        let cmd: INIT_GAME = {
+        let cmd: InitGame = {
             cmd: 'init_game'
         };
         this.ws.send(JSON.stringify(cmd))
