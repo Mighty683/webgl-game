@@ -26,13 +26,13 @@ export class Renderer {
         let fieldSize = this.width / 30;
         let centerX = this.width / 2;
         let centerY = this.height / 2;
-        let x1 = centerX + (x * fieldSize);
-        let y1 = centerY - (y * fieldSize);
+        let x1 = centerX + ((x - center.x) * fieldSize);
+        let y1 = centerY - ((y - center.y) * fieldSize);
         return [x1, y1, fieldSize, fieldSize];
     }
     renderArena(center: CenterCoordinates, elements: Array<ArenaElement>) {
+        this.fillBackground();
         elements.forEach(el => {
-            this.fillBackground();
             if (el.color) {
                 this.c.beginPath();
                 this.c.fillStyle = el.color;

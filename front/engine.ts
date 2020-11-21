@@ -49,6 +49,10 @@ export class Engine {
                 return this.castSpell('fire_wave');
             case 's':
                 return this.castSpell('ice_wave');
+            case 'd':
+                return this.castSpell('fire_field');
+            case 'f':
+                return this.castSpell('ice_field');
         }
     }
 

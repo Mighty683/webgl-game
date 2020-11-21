@@ -2,6 +2,7 @@ import WebSocket from "ws";
 import { CastSpell, MovePlayer, PlayerCommand, RefreshState, SERVER_COMMAND, SetPlayerId } from "../common/websocket_messages";
 import { Game } from "./game";
 
+const TICK_TIME = 300;
 export class Server {
     game: Game
     server: WebSocket.Server
@@ -32,12 +33,11 @@ export class Server {
             };
         });
         socket.on('close', () => {
-            this.game.removePlayer(player);
+            this.game.removeElement(player);
         });
     }
     initGame() {
         this.interval = setInterval(() => {
-            this.game.gameTick();
             this.server.clients.forEach((client) => {
                 let cmd: RefreshState = {
                     cmd: 'refresh_state',
@@ -45,6 +45,7 @@ export class Server {
                 }
                 client.send(JSON.stringify(cmd));
             });
-        }, 500);
+            this.game.gameTick();
+        }, TICK_TIME);
     }
 }

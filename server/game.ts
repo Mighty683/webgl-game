@@ -1,5 +1,6 @@
 import { ArenaElement, Player } from "../common/arena_elements";
 import { Direction } from "../common/types";
+import { getFieldElements } from "./spells/field";
 import { getWaveElements } from "./spells/wave";
 
 export class Game {
@@ -38,22 +39,31 @@ export class Game {
         if (player.active) {
             if (spell === 'fire_wave') {
                 let wave = getWaveElements(player.x, player.y, player.direction, 'fire');
-                this.elements.concat(wave);
+                this.elements = this.elements.concat(wave);
             }
             if (spell === 'ice_wave') {
                 let wave = getWaveElements(player.x, player.y, player.direction, 'ice');
-                this.elements.concat(wave);
+                this.elements = this.elements.concat(wave);
+            }
+            if (spell === 'fire_field') {
+                let wave = getFieldElements(player.x, player.y, player.direction, 'fire');
+                this.elements = this.elements.concat(wave);
+            }
+            if (spell === 'ice_field') {
+                let wave = getFieldElements(player.x, player.y, player.direction, 'ice');
+                this.elements = this.elements.concat(wave);
             }
         }
     }
-    removePlayer(player: Player) {
+    removeElement(el: ArenaElement) {
         this.elements.splice(
-            this.elements.indexOf(player), 1
+            this.elements.indexOf(el), 1
         );
     }
     gameTick() {
         this.elements.forEach(el => {
             el.onTick && el.onTick();
-        })
+        });
+        this.elements = this.elements.filter(el => el.active);
     }
 }
