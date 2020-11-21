@@ -1,5 +1,6 @@
 import { Arena } from "../common/arena";
 import { ArenaField, Player } from "../common/arena_elements";
+import { Direction } from "../common/types";
 
 function generateNewArena(): Arena {
     return new Arena(new Array(16)
@@ -17,27 +18,27 @@ export class GameServer {
         this.arena = generateNewArena();
         this.players = new Set();
     }
-    movePlayer(player: Player, direction: 'up' | 'left' | 'down'| 'right') {
+    movePlayer(player: Player, direction: Direction) {
         if (!player.moved) {
             switch(direction) {
                 case 'up':
                     if (this.arena.rows[player.y - 1][player.x]?.canMoveHere()) {
-                        player.move(player.y - 1, player.x);
+                        player.move(player.x, player.y - 1);
                     }
                     break;
                 case 'down':
                     if (this.arena.rows[player.y + 1][player.x]?.canMoveHere()) {
-                        player.move(player.y + 1, player.x);
+                        player.move(player.x, player.y + 1);
                     }
                     break;
                 case 'right':
                     if (this.arena.rows[player.y][player.x + 1]?.canMoveHere()) {
-                        player.move(player.y, player.x + 1);
+                        player.move(player.x + 1, player.y);
                     }
                     break;
                 case 'left':
                     if (this.arena.rows[player.y][player.x - 1]?.canMoveHere()) {
-                        player.move(player.y, player.x - 1);
+                        player.move(player.x - 1, player.y);
                     }
                     break;
             }
@@ -52,8 +53,13 @@ export class GameServer {
     generateFullArena() {
         let arena = generateNewArena();
         this.players.forEach(player => {
+            console.log(player.x, player.y);
             arena.rows[player.y][player.x].elements.push(player);
         });
         return arena;
+    }
+
+    unlockPlayers() {
+        this.players.forEach(player => player.refreshMove());
     }
 }

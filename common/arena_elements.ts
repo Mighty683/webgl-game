@@ -45,4 +45,7 @@ export class Player extends ArenaElement {
         this.y = y;
         this.moved = true;
     }
+    refreshMove() {
+        this.moved = false;
+    }
 }

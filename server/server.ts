@@ -5,6 +5,7 @@ import { GameServer } from "./game";
 export class Server {
     game: GameServer
     server: WebSocket.Server
+    interval?: NodeJS.Timeout
     constructor() {
         this.game = new GameServer();
         this.server = new WebSocket.Server({
@@ -17,15 +18,22 @@ export class Server {
                 let cmd = JSON.parse(message.toString()) as PLAYER_COMMAND;
                 switch(cmd.cmd) {
                     case 'init_game':
-                        this.broadcast({
-                            cmd: 'refresh_state',
-                            arena: this.game.arena
-                        });
+                        this.initGame();
                     case 'move_player':
                         this.game.movePlayer(player, (cmd as MOVE_PLAYER).direction);
                 };
             });
         });
+    }
+
+    initGame() {
+        this.interval = setInterval(() => {
+            this.broadcast({
+                cmd: 'refresh_state',
+                arena: this.game.generateFullArena()
+            });
+            this.game.unlockPlayers();
+        }, 500);
     }
 
     broadcast(message: SERVER_COMMAND) {

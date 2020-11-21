@@ -6,7 +6,6 @@ export class Renderer {
     c: CanvasRenderingContext2D
     height: number
     width: number
-    arena: Arena
     get fieldSize() { return Math.ceil(this.width / ARENA_WIDTH); }
     constructor(canvas: HTMLCanvasElement, height: number, width: number) {
         this.canvas = canvas;
@@ -14,7 +13,7 @@ export class Renderer {
         this.canvas.height = height;
         this.width = width;
         this.height = height;
-        this.c = canvas.getContext('2d');
+        this.c = canvas.getContext('2d') as CanvasRenderingContext2D;
         this.fillBackground('#000000')
     }
     fillBackground(color: string) {
@@ -24,12 +23,16 @@ export class Renderer {
         this.c.fill();
         this.c.closePath();
     }
+
+    consoleArena(arena: Arena) {
+        console.log(arena?.rows.map(row => {
+            return row.map(el => {
+                return el.elements.find(el => el.type === 'player') ? 'X' : ' '
+            }).join('');
+        }).join('\n'));
+    }
     renderArena(arena: Arena) {
-        if (!this.arena) {
-            this.arena = arena;
-        }
-        this.arena;
-        this.arena.rows.forEach((row, rowIndex) => {
+        arena.rows.forEach((row, rowIndex) => {
             row.forEach((field, fieldIndex) => {
                 this.renderField(rowIndex, fieldIndex, field);
             })

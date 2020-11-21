@@ -1,4 +1,5 @@
 import { Arena } from "./arena";
+import { Direction } from "./types";
 
 
 /**
@@ -6,7 +7,7 @@ import { Arena } from "./arena";
  */
 export type MOVE_PLAYER = {
   cmd: 'move_player'
-  direction: 'up' | 'down' | 'left' | 'right'
+  direction: Direction
 }
 
 export type INIT_GAME = {

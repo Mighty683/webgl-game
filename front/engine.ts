@@ -1,5 +1,6 @@
 import { Arena } from "../common/arena";
-import { INIT_GAME, SERVER_COMMAND } from "../common/websocket_messages";
+import { Direction } from "../common/types";
+import { INIT_GAME, MOVE_PLAYER, SERVER_COMMAND } from "../common/websocket_messages";
 import { Renderer } from "./renderer";
 const HEIGHT = 600;
 const WIDTH = 1200;
@@ -24,6 +25,29 @@ export class Engine {
                 }
             });
         });
+        document.addEventListener('keydown', this.keyboardListener.bind(this));
+    }
+
+    keyboardListener (event: KeyboardEvent) {
+        console.log('Pressed: ', event.key);
+        switch (event.key) {
+            case 'ArrowDown':
+                return this.movePlayer('down');
+            case 'ArrowUp':
+                return this.movePlayer('up');
+            case 'ArrowLeft':
+                return this.movePlayer('left');
+            case 'ArrowRight':
+                return this.movePlayer('right');
+        }
+    }
+
+    movePlayer(direction: Direction) {
+        let cmd: MOVE_PLAYER = {
+            cmd: 'move_player',
+            direction,
+        }
+        this.ws.send(JSON.stringify(cmd));
     }
 
     refreshArena(arena: Arena) {
