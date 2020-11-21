@@ -36,6 +36,7 @@ export type RefreshState = {
   cmd: 'refresh_state'
   id: string
   elements: Array<ArenaElement>
+  score: number
 }
 
 export type SetPlayerId = {

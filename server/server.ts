@@ -47,21 +47,22 @@ export class Server {
         return game;
     }
     joinPlayerToGame(game: Game, player: PlayerSocket) {
-        let gamePlayer = game.placePlayer(0,0, player);
-        player.setPlayer(gamePlayer);
-        let initCommand: SetPlayerId = {
-            cmd: 'set_player_id',
-            id: gamePlayer.id
+        game.addPlayer(player);
+        if (player.gamePlayer) {
+            let initCommand: SetPlayerId = {
+                cmd: 'set_player_id',
+                id: player.gamePlayer.id
+            }
+            player.socket.send(JSON.stringify(initCommand));
         }
-        player.socket.send(JSON.stringify(initCommand));
         player.socket.on('message', (message) => {
             let cmd = JSON.parse(message.toString()) as PlayerCommand;
             switch(cmd.cmd) {
                 case 'move_player':
-                    game.movePlayer(gamePlayer, (cmd as MovePlayer).direction);
+                    game.movePlayer(player, (cmd as MovePlayer).direction);
                     break;
                 case 'cast_spell':
-                    game.castSpell(gamePlayer, (cmd as CastSpell).spell);
+                    game.castSpell(player, (cmd as CastSpell).spell);
                     break;
             };
         });

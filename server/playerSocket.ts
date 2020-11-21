@@ -1,13 +1,20 @@
 import WebSocket from "ws";
-import { Player } from "../common/arena_elements";
+import { Player } from "./player";
 
 export class PlayerSocket {
-    player?: Player
+    gamePlayer?: Player
     socket: WebSocket
+    id: string
+    score: number
     constructor (socket: WebSocket) {
         this.socket = socket;
+        this.score = 0;
+        this.id = Date.now().toString(36)
     }
-    setPlayer(player: Player) {
-        this.player = player;
+    addKill() {
+        this.score++;
+    }
+    setGamePlayer(player: Player) {
+        this.gamePlayer = player;
     }
 }

@@ -1,10 +1,11 @@
-import { ArenaElement, Player } from "../../common/arena_elements";
 import { CenterCoordinates } from "../../common/types";
+import { ArenaElement } from "../../server/arenaElement";
 
 export type GameState = {
     hp: number,
     id: string,
     playerId: string
+    score: number
 }
 export class Renderer {
     canvas: HTMLCanvasElement
@@ -27,9 +28,10 @@ export class Renderer {
         this.c.fill();
         if (state) {
             this.c.fillStyle = '#FFFFFF';
-            this.c.fillText(`GAME ID: ${state.id}`, 0, 20);
-            this.c.fillText(`PLAYER ID: ${state.playerId}`, 0, 40);
-            this.c.fillText(`HP: ${state.hp}`, 0, 60);
+            this.c.fillText(`GAME ID: ${state.id}`, 10, 20);
+            this.c.fillText(`PLAYER ID: ${state.playerId}`, 10, 40);
+            this.c.fillText(`HP: ${state.hp}`, 10, 60);
+            this.c.fillText(`SCORE: ${state.score}`, 10, 80);
         }
         this.c.closePath();
     }

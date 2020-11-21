@@ -18,20 +18,21 @@ export class Game {
         // TODO: Proper id generation
         this.id = Math.random().toString(36).substr(0, 6);
     }
-    movePlayer(player: Player, direction: Direction) {
-        if (player.active && !player.moved) {
+    movePlayer(player: PlayerSocket, direction: Direction) {
+        let gamePlayer = player.gamePlayer;
+        if (gamePlayer && gamePlayer.active && !gamePlayer.moved) {
             switch(direction) {
                 case 'up':
-                    this.checkMove(player, player.x, player.y + 1) && player.move(player.x, player.y + 1);
+                    this.checkMove(gamePlayer, gamePlayer.x, gamePlayer.y + 1) && gamePlayer.move(gamePlayer.x, gamePlayer.y + 1);
                     break;
                 case 'down':
-                    this.checkMove(player, player.x, player.y - 1) && player.move(player.x, player.y - 1);
+                    this.checkMove(gamePlayer, gamePlayer.x, gamePlayer.y - 1) && gamePlayer.move(gamePlayer.x, gamePlayer.y - 1);
                     break;
                 case 'right':
-                    this.checkMove(player, player.x + 1, player.y) && player.move(player.x + 1, player.y);
+                    this.checkMove(gamePlayer, gamePlayer.x + 1, gamePlayer.y) && gamePlayer.move(gamePlayer.x + 1, gamePlayer.y);
                     break;
                 case 'left':
-                    this.checkMove(player, player.x - 1, player.y) && player.move(player.x - 1, player.y);
+                    this.checkMove(gamePlayer, gamePlayer.x - 1, gamePlayer.y) && gamePlayer.move(gamePlayer.x - 1, gamePlayer.y);
                     break;
             }
         }
@@ -40,22 +41,22 @@ export class Game {
         // Any solid object on coordinate prevents move
         return !this.elements.find(e => player !== e && e.x === x && e.y === y && !e.canMoveHere)
     }
-    castSpell(player: Player, spell: string) {
-        if (player.active) {
+    castSpell(playerSocket: PlayerSocket, spell: string) {
+        if (playerSocket.gamePlayer?.active) {
             if (spell === 'fire_wave') {
-                let wave = getWaveElements(player.x, player.y, player.direction, 'fire');
+                let wave = getWaveElements('fire', playerSocket);
                 this.elements = this.elements.concat(wave);
             }
             if (spell === 'ice_wave') {
-                let wave = getWaveElements(player.x, player.y, player.direction, 'ice');
+                let wave = getWaveElements('ice', playerSocket);
                 this.elements = this.elements.concat(wave);
             }
             if (spell === 'fire_field') {
-                let wave = getFieldElements(player.x, player.y, player.direction, 'fire');
+                let wave = getFieldElements('fire', playerSocket);
                 this.elements = this.elements.concat(wave);
             }
             if (spell === 'ice_field') {
-                let wave = getFieldElements(player.x, player.y, player.direction, 'ice');
+                let wave = getFieldElements('ice', playerSocket);
                 this.elements = this.elements.concat(wave);
             }
         }
@@ -64,8 +65,8 @@ export class Game {
         this.playersSockets.splice(
             this.playersSockets.indexOf(player), 1
         );
-        if (player.player)
-        this.removeElement(player.player);
+        if (player.gamePlayer)
+        this.removeElement(player.gamePlayer);
     }
     removeElement(el: ArenaElement) {
         this.elements.splice(
@@ -73,21 +74,37 @@ export class Game {
         );
     }
     gameTick() {
+        /**
+         * Order:
+         * - Elements player effects
+         * - Player attacks (TODO)
+         * - Check if player is alive
+         * - Elements onTick
+         */
         this.elements.forEach(el => {
             this.playersSockets.forEach(playerSocket => {
-                if (playerSocket.player === el) {
+                if (playerSocket.gamePlayer === el) {
                     return;
                 }
-                if (playerSocket.player?.x === el.x && playerSocket.player.y === el.y) {
-                    el.playerEffect && el.playerEffect(playerSocket.player)
+                if (playerSocket.gamePlayer?.x === el.x && playerSocket.gamePlayer?.y === el.y) {
+                    el.playerEffect && el.playerEffect(playerSocket.gamePlayer)
                 }
-            })
+                if (!playerSocket.gamePlayer?.active) {
+                    this.placePlayer(0, 0, playerSocket);
+                }
+            });
             el.onTick && el.onTick();
         });
         this.elements = this.elements.filter(el => el.active);
     }
     placePlayer(x: number, y: number, playerSocket: PlayerSocket) {
-        let gamePlayer = new Player(x,y, Date.now().toString())
+        let gamePlayer = new Player(x,y, playerSocket.id)
+        playerSocket.setGamePlayer(gamePlayer)
+        this.elements.push(gamePlayer);
+        return gamePlayer;
+    }
+    addPlayer(playerSocket: PlayerSocket) {
+        let gamePlayer = this.placePlayer(0, 0, playerSocket);
         this.playersSockets.push(playerSocket);
         this.elements.push(gamePlayer);
         return gamePlayer;
@@ -98,7 +115,8 @@ export class Game {
                 let cmd: RefreshState = {
                     cmd: 'refresh_state',
                     id: this.id,
-                    elements: this.elements
+                    elements: this.elements,
+                    score: player.score
                 }
                 this.gameTick();
                 player.socket.send(JSON.stringify(cmd));

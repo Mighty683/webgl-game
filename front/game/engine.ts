@@ -1,6 +1,7 @@
 import { Direction } from "../../common/types";
 import { CastSpell, CreateGame, JoinGame, MovePlayer, RefreshState, SERVER_COMMAND } from "../../common/websocket_messages";
 import { ArenaElement } from "../../server/arenaElement";
+import { Player } from "../../server/player";
 import { Renderer } from "./renderer";
 const HEIGHT = 600;
 const WIDTH = 1200;
@@ -21,13 +22,19 @@ export class Engine {
                 switch (cmd.cmd) {
                     case 'set_player_id':
                         this.setPlayerId(cmd.id);
-                    break;
+                        break;
                     case 'refresh_state':
-                        this.refreshArena((cmd as RefreshState).elements, (cmd as RefreshState).id);
+                        
+                        this.refreshArena(
+                            (cmd as RefreshState).elements,
+                            (cmd as RefreshState).id,
+                            (cmd as RefreshState).score,
+                            );
+                        break;
                     case 'close_game':
                         this.ws.close();
                         onClose();
-                    break;
+                        break;
                 }
             });
             if (gameId) {
@@ -95,14 +102,15 @@ export class Engine {
         this.ws.send(JSON.stringify(cmd));
     }
 
-    refreshArena(elements: Array<ArenaElement>, gameId: string) {
+    refreshArena(elements: Array<ArenaElement>, gameId: string, score: number) {
         if (this.playerId) {
-            let player = elements.find(el => el.id === this.playerId)
+            let player = elements.find(el => el.id === this.playerId) as Player
             if (player) {
                 this.renderer.renderArena({ x: player.x, y: player.y }, elements, {
                     id: gameId,
-                    hp: player.hp || 0,
-                    playerId: player.id || ''
+                    hp: player.hp,
+                    playerId: player.id,
+                    score,
                 });
             }
         }
