@@ -1,5 +1,5 @@
-import { Arena } from "./arena";
-import { Direction } from "./types";
+import { ArenaElement, Player } from "./arena_elements";
+import { CenterCoordinates, Direction } from "./types";
 
 
 /**
@@ -16,20 +16,20 @@ export type CastSpell = {
   spell: string
 }
 
-export type InitGame = {
-  cmd: 'init_game'
-}
-
 export type PlayerCommand = MovePlayer
-  | InitGame
   | CastSpell;
 
 /**
  * Server commands
  */
-export type REFRESH_STATE = {
+export type RefreshState = {
   cmd: 'refresh_state'
-  arena: Arena
+  elements: Array<ArenaElement>
 }
 
-export type SERVER_COMMAND = REFRESH_STATE;
+export type SetPlayerId = {
+  cmd: 'set_player_id'
+  id: string
+}
+
+export type SERVER_COMMAND = RefreshState | SetPlayerId;

@@ -1,6 +1,6 @@
-import { Arena } from "../common/arena";
+import { ArenaElement } from "../common/arena_elements";
 import { Direction } from "../common/types";
-import { CastSpell, InitGame, MovePlayer, SERVER_COMMAND } from "../common/websocket_messages";
+import { CastSpell, MovePlayer, RefreshState, SERVER_COMMAND } from "../common/websocket_messages";
 import { Renderer } from "./renderer";
 const HEIGHT = 600;
 const WIDTH = 1200;
@@ -8,23 +8,30 @@ const WS_HOST = 'localhost:8080';
 
 export class Engine {
     renderer: Renderer
-    arena?: Arena
     ws: WebSocket
+    playerId?: string
     constructor (rootEl: HTMLElement) {
         let canvasElement = document.createElement('canvas');
         rootEl.appendChild(canvasElement);
         this.renderer = new Renderer(canvasElement, HEIGHT, WIDTH);
         this.ws = new WebSocket(`ws://${WS_HOST}`);
         this.ws.addEventListener('open', () => {
-            this.initGame();
             this.ws.addEventListener('message', (msg) => {
                 let cmd = JSON.parse(msg.data) as SERVER_COMMAND;
                 switch (cmd.cmd) {
+                    case 'set_player_id':
+                        this.setPlayerId(cmd.id);
+                    break;
                     case 'refresh_state':
-                        this.refreshArena(cmd.arena);
+                        this.refreshArena((cmd as RefreshState).elements);
+                    break;
                 }
             });
         });
+    }
+
+    setPlayerId(id: string) {
+        this.playerId = id;
         document.addEventListener('keydown', this.keyboardListener.bind(this));
     }
 
@@ -61,14 +68,12 @@ export class Engine {
         this.ws.send(JSON.stringify(cmd));
     }
 
-    refreshArena(arena: Arena) {
-        this.renderer.renderArena(arena);
-    }
-
-    initGame() {
-        let cmd: InitGame = {
-            cmd: 'init_game'
-        };
-        this.ws.send(JSON.stringify(cmd))
+    refreshArena(elements: Array<ArenaElement>) {
+        if (this.playerId) {
+            let player = elements.find(el => el.id === this.playerId)
+            if (player) {
+                this.renderer.renderArena({ x: player.x, y: player.y }, elements);
+            }
+        }
     }
 }

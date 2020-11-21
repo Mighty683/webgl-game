@@ -1,33 +1,16 @@
 import { Direction } from "./types";
 
-export class ArenaField {
-    elements: Array<ArenaElement>
-    type: ArenaElementType
-    constructor (type: ArenaElementType) {
-        this.elements = new Array();
-        this.type = type;
-    }
-    setType (type: ArenaElementType) {
-        this.type = type;
-    }
-    canMoveHere() {
-        return this.type !== 'solid' && !this.elements.find(el => {
-            return el.type === 'player';
-        });
-    }
-}
-
-export type ArenaElementType = 'solid' | 'air'
-
 export interface ArenaElement {
     sprite?: string
     color?: string
-    type: string
-    onTick?: () => void
-    playerEffect?: (player: Player) => void
-    active: boolean,
+    type: String
+    active: boolean
+    canMoveHere: boolean
     x: number
     y: number
+    id?: string
+    onTick?: () => void
+    playerEffect?: (player: Player) => void
 }
 
 export class Player implements ArenaElement {
@@ -41,6 +24,7 @@ export class Player implements ArenaElement {
     active: boolean
     sprite?: string | undefined;
     color?: string | undefined;
+    canMoveHere = false;
     constructor(x: number, y: number, id: string) {
         this.color = '#F5CBA7';
         this.x = x;
@@ -65,6 +49,9 @@ export class Player implements ArenaElement {
     refreshMove() {
         this.moved = false;
     }
+    onTick() {
+        this.refreshMove();
+    }
     reduceHp(damage: number) {
         this.hp = this.hp - damage;
         if (this.hp <= 0) {
@@ -76,22 +63,23 @@ export class Player implements ArenaElement {
 export class AreaSpell implements ArenaElement {
     x: number
     y: number
-    hp: number;
+    duration: number;
     damage: number;
     color: string;
     type = 'area_spell'
     active: boolean
-    constructor (x: number, y: number, hp: number, damage: number, color: string) {
+    canMoveHere = true;
+    constructor (x: number, y: number, duration: number, damage: number, color: string) {
         this.color = color;
         this.x = x;
         this.y = y;
-        this.hp = hp;
+        this.duration = duration;
         this.damage = damage;
         this.active = true;
     }
     onTick() {
-        this.hp = this.hp - 1;
-        if (this.hp <= 0) {
+        this.duration = this.duration - 1;
+        if (this.duration <= 0) {
             this.active = false;
         }
     }

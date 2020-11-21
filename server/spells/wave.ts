@@ -1,4 +1,3 @@
-import { Arena } from "../../common/arena";
 import { AreaSpell } from "../../common/arena_elements";
 import { Direction, Element } from "../../common/types";
 import { getElementColor } from "./elementsHelper";

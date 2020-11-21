@@ -1,12 +1,11 @@
-import { Arena, ARENA_HEIGHT, ARENA_WIDTH } from "../common/arena";
-import { ArenaField } from "../common/arena_elements";
+import { ArenaElement, Player } from "../common/arena_elements";
+import { CenterCoordinates } from "../common/types";
 
 export class Renderer {
     canvas: HTMLCanvasElement
     c: CanvasRenderingContext2D
     height: number
     width: number
-    get fieldSize() { return Math.ceil(this.width / ARENA_WIDTH); }
     constructor(canvas: HTMLCanvasElement, height: number, width: number) {
         this.canvas = canvas;
         this.canvas.width = width;
@@ -14,68 +13,32 @@ export class Renderer {
         this.width = width;
         this.height = height;
         this.c = canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.fillBackground('#000000')
+        this.fillBackground()
     }
-    fillBackground(color: string) {
+    fillBackground() {
         this.c.beginPath();
         this.c.rect(0, 0, this.width, this.height);
-        this.c.fillStyle = color;
+        this.c.fillStyle = '#000000';
         this.c.fill();
         this.c.closePath();
     }
-
-    consoleArenaState(arena: Arena) {
-        console.log(arena?.rows.map(row => {
-            return row.map(el => {
-                if (!el.elements.length) {
-                    return ' ';
-                } else if (el.elements.find(el => el.type === 'player')) {
-                    return 'X';
-                } else {
-                    return 'Y';
-                }
-            }).join('');
-        }).join('\n'));
+    getFieldRect(center: CenterCoordinates,x: number, y: number): [number, number, number, number] {
+        let fieldSize = this.width / 30;
+        let centerX = this.width / 2;
+        let centerY = this.height / 2;
+        let x1 = centerX + (x * fieldSize);
+        let y1 = centerY - (y * fieldSize);
+        return [x1, y1, fieldSize, fieldSize];
     }
-    renderArena(arena: Arena) {
-        arena.rows.forEach((row, rowIndex) => {
-            row.forEach((field, fieldIndex) => {
-                this.renderField(rowIndex, fieldIndex, field);
-            })
+    renderArena(center: CenterCoordinates, elements: Array<ArenaElement>) {
+        elements.forEach(el => {
+            this.fillBackground();
+            if (el.color) {
+                this.c.beginPath();
+                this.c.fillStyle = el.color;
+                this.c.fillRect(...this.getFieldRect(center, el.x, el.y));
+                this.c.closePath();
+            }
         });
-        // this.consoleArenaState(arena);
-    }
-    getFieldBackground(field: ArenaField): string {
-        switch(field.type) {
-            case 'air':
-                return '#0E7B19';
-            case 'solid':
-            default:
-                return '#363946'
-        }
-    }
-    getFieldRect(x: number, y: number): [number, number, number, number] {
-        let y1 = y * this.fieldSize;
-        let x1 = x * this.fieldSize;
-        return [y1, x1, this.fieldSize, this.fieldSize];
-    }
-    renderField(x: number, y: number, field: ArenaField) {
-        this.c.beginPath();
-        this.c.fillStyle = this.getFieldBackground(field);
-        this.c.fillRect(...this.getFieldRect(x, y));
-        this.c.closePath();
-        if (field.elements?.length > 0) {
-            field.elements.forEach((element) => {
-                if (element.sprite) {
-                    // TODO: Drawing sprites
-                }
-                if (element.color) {
-                    this.c.beginPath();
-                    this.c.fillStyle = element.color;
-                    this.c.fillRect(...this.getFieldRect(x, y));
-                    this.c.closePath();
-                }
-            })
-        }
     }
 }
