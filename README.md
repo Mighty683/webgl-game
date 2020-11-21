@@ -18,19 +18,21 @@ Front-end contain mainly only render logic based on data from backend.
 
 Commands:
 - Move: Arrow keys
-- Waves Spells: `a`,`s,`
+- Waves Spells: `a`,`s`
 - Field Spells: `d`,`f`
 
 ## TODO:
-- Multiplayer
-  - Allow multiple games
-  - Allow multiple players join game
 - Webgl now I used simpler in usage canvas.
 - Refactor game logic.
   - Better collision detection.
   - Remove single function loop pattern
   - Introduce events?
-- Add layout around game.
+- Add layout around game
+  - Waiting room
+  - List of games
+  - Display messages about game:
+    - Death message
+    - Kill message
 
 
 ### Ideas
