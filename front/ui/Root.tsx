@@ -20,6 +20,6 @@ export const Root: React.FC = () => {
             }}>Zacznij nową grę</button>
         </div>
     } else {
-        return <Game id={id} />
+        return <Game id={id} onClose={() => setGameStart(false)}/>
     }
 }

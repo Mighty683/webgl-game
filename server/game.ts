@@ -60,6 +60,13 @@ export class Game {
             }
         }
     }
+    removePlayer(player: PlayerSocket) {
+        this.playersSockets.splice(
+            this.playersSockets.indexOf(player), 1
+        );
+        if (player.player)
+        this.removeElement(player.player);
+    }
     removeElement(el: ArenaElement) {
         this.elements.splice(
             this.elements.indexOf(el), 1

@@ -44,4 +44,8 @@ export type SetPlayerId = {
   id: string
 }
 
-export type SERVER_COMMAND = RefreshState | SetPlayerId;
+export type CloseGame = {
+  cmd: 'close_game'
+}
+
+export type SERVER_COMMAND = RefreshState | SetPlayerId | CloseGame;

@@ -10,7 +10,7 @@ export class Engine {
     renderer: Renderer
     ws: WebSocket
     playerId?: string
-    constructor (rootEl: HTMLElement, gameId: string) {
+    constructor (rootEl: HTMLElement, gameId: string, onClose: Function) {
         let canvasElement = document.createElement('canvas');
         rootEl.appendChild(canvasElement);
         this.renderer = new Renderer(canvasElement, HEIGHT, WIDTH);
@@ -24,6 +24,9 @@ export class Engine {
                     break;
                     case 'refresh_state':
                         this.refreshArena((cmd as RefreshState).elements, (cmd as RefreshState).id);
+                    case 'close_game':
+                        this.ws.close();
+                        onClose();
                     break;
                 }
             });

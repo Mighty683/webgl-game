@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { CastSpell, JoinGame, MovePlayer, PlayerCommand, RefreshState, SERVER_COMMAND, SetPlayerId } from "../common/websocket_messages";
+import { CastSpell, CloseGame, JoinGame, MovePlayer, PlayerCommand, RefreshState, SERVER_COMMAND, SetPlayerId } from "../common/websocket_messages";
 import { Game } from "./game";
 import { PlayerSocket } from "./playerSocket";
 
@@ -27,8 +27,15 @@ export class Server {
                     break;
                 case 'join_game':
                     let game = this.games.find(g => g.id === (cmd as JoinGame).id)
-                    game && this.joinPlayerToGame(game, player);
-                    game?.initGame();
+                    if (game) {
+                        this.joinPlayerToGame(game, player);
+                        game.initGame();
+                    } else {
+                        let closeGame: CloseGame = {
+                            cmd: 'close_game'
+                        }
+                        socket.send(JSON.stringify(closeGame));
+                    }
                     break;
             }
         })
@@ -59,7 +66,7 @@ export class Server {
             };
         });
         player.socket.on('close', () => {
-            game.removeElement(gamePlayer);
+            game.removePlayer(player);
             this.players.splice(this.players.indexOf(player), 1);
         });
     }
