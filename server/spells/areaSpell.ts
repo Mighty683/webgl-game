@@ -8,13 +8,11 @@ export class AreaSpell implements ArenaElement {
     y: number
     duration: number;
     damage: number;
-    color: string;
     type = 'area_spell'
     active: boolean
     canMoveHere = true;
     creator: PlayerSocket
-    constructor (x: number, y: number, duration: number, damage: number, color: string, creator: PlayerSocket) {
-        this.color = color;
+    constructor (x: number, y: number, duration: number, damage: number, creator: PlayerSocket) {
         this.x = x;
         this.y = y;
         this.creator = creator;
