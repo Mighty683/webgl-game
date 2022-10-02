@@ -17,11 +17,13 @@ Server is based on web-sockets only it's place where game logic is placed.
 Front-end contain mainly only render logic based on data from backend.
 
 Commands:
+
 - Move: Arrow keys
 - Waves Spells: `a`,`s`
 - Field Spells: `d`,`f`
 
 ## TODO:
+
 - Webgl now I used simpler in usage canvas.
 - Refactor game logic.
   - Better collision detection.
@@ -33,7 +35,6 @@ Commands:
   - Display messages about game:
     - Death message
     - Kill message
-
 
 ### Ideas
 
