@@ -1,4 +1,5 @@
-import { ArenaElement } from '../server/game/arenaElement';
+import { Player } from '../server/game/player';
+import { ArenaElement } from '../server/game/types';
 import { Direction } from './types';
 
 /**
@@ -35,6 +36,7 @@ export type RefreshState = {
   y: number;
   hp: number;
   elements: Array<ArenaElement>;
+  players: Array<PlayerRefreshData>;
   score: number;
 };
 
@@ -48,3 +50,10 @@ export type CloseGame = {
 };
 
 export type SERVER_COMMAND = RefreshState | SetPlayerId | CloseGame;
+
+export type PlayerRefreshData = {
+  x: number;
+  y: number;
+  sprite?: string | undefined;
+  color?: string | undefined;
+};

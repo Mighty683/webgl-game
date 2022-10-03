@@ -5,10 +5,19 @@
   "version": "0.2.0",
   "configurations": [
   {
+    "name": "Server",
+    "port": 9229,
+    "request": "attach",
+    "skipFiles": [
+      "<node_internals>/**"
+    ],
+    "type": "node"
+  },
+  {
     "type": "firefox",
     "request": "launch",
     "reAttach": true,
-    "name": "Launch localhost",
+    "name": "Front-end",
     "url": "http://localhost:1234",
     "webRoot": "${workspaceFolder}"
   },

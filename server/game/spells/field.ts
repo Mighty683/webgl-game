@@ -15,7 +15,7 @@ export class FieldSpell implements ISpell {
     this.type = type;
   }
   async run(game: Game, caster: Player): Promise<void> {
-    game.elements = game.elements.concat(
+    game.arenaElements = game.arenaElements.concat(
       this.getFieldElements(this.type, caster)
     );
   }

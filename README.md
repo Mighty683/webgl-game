@@ -29,6 +29,8 @@ Commands:
   - Better collision detection.
   - Remove single function loop pattern
   - Introduce events?
+  - Separate players from arena elements
+  - Move centering of render to server
 - Add layout around game
   - Waiting room
   - List of games

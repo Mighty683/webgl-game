@@ -1,5 +1,5 @@
-import { ArenaElement } from '../arenaElement';
 import { Player } from '../player';
+import { ArenaElement } from '../types';
 
 export class AreaEffectElement implements ArenaElement {
   x: number;
@@ -28,10 +28,10 @@ export class AreaEffectElement implements ArenaElement {
     this.caster = caster;
   }
   onTick() {
-    this.duration = this.duration - 1;
     if (this.duration <= 0) {
       this.active = false;
     }
+    this.duration = this.duration - 1;
   }
   playerEffect(player: Player) {
     if (player.active) {

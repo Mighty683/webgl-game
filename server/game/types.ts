@@ -1,6 +1,9 @@
 import { Player } from './player';
+export interface Tickable {
+  onTick?: () => void;
+}
 
-export interface ArenaElement {
+export interface ArenaElement extends Tickable {
   sprite?: string;
   color?: string;
   type: String;
@@ -10,6 +13,5 @@ export interface ArenaElement {
   x: number;
   y: number;
   id?: string;
-  onTick?: () => void;
   playerEffect?: (player: Player) => void;
 }

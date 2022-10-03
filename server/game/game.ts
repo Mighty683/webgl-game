@@ -1,21 +1,21 @@
 import { Direction } from '../../common/types';
 import { RefreshState } from '../../common/websocket_messages';
-import { ArenaElement } from './arenaElement';
 import { Player } from './player';
 
 import { ISpell } from './spells/spell';
 import { FieldSpell } from './spells/field';
 import { WaveSpell } from './spells/wave';
+import { ArenaElement } from './types';
 
-const TICK_TIME = 300;
+const TICK_TIME = 500;
 export class Game {
-  elements: Array<ArenaElement>;
+  arenaElements: Array<ArenaElement>;
   spells: Map<string, ISpell>;
   interval?: NodeJS.Timeout;
   players: Set<Player>;
   id: string;
   constructor() {
-    this.elements = new Array();
+    this.arenaElements = new Array();
     this.players = new Set();
     this.spells = new Map();
     this.spells.set('fire_wave', new WaveSpell('fire'));
@@ -49,7 +49,7 @@ export class Game {
   }
   checkMove(player: Player, x: number, y: number): boolean {
     // Any solid object on coordinate prevents move
-    return !this.elements.find(
+    return !this.arenaElements.find(
       (e) => player !== e && e.x === x && e.y === y && !e.canMoveHere
     );
   }
@@ -64,7 +64,7 @@ export class Game {
     this.removeElement(player);
   }
   removeElement(el: ArenaElement) {
-    this.elements.splice(this.elements.indexOf(el), 1);
+    this.arenaElements.splice(this.arenaElements.indexOf(el), 1);
   }
   gameTick() {
     /**
@@ -74,7 +74,7 @@ export class Game {
      * - Check if player is alive
      * - Elements onTick
      */
-    this.elements.forEach((el) => {
+    this.arenaElements.forEach((el) => {
       this.players.forEach((gamePlayer) => {
         if (gamePlayer === el) {
           return;
@@ -85,12 +85,12 @@ export class Game {
       });
       el.onTick && el.onTick();
     });
-    this.elements = this.elements.filter((el) => el.active);
+    this.players.forEach((p) => p.onTick());
+    this.arenaElements = this.arenaElements.filter((el) => el.active);
   }
   addPlayer() {
     let gamePlayer = new Player(0, 0);
     this.players.add(gamePlayer);
-    this.elements.push(gamePlayer);
     return gamePlayer;
   }
   initGame(onTick: () => void) {

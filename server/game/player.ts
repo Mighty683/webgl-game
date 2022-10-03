@@ -1,7 +1,7 @@
 import { Direction } from '../../common/types';
-import { ArenaElement } from './arenaElement';
+import { Tickable } from './types';
 
-export class Player implements ArenaElement {
+export class Player implements Tickable {
   x: number;
   y: number;
   hp: number;

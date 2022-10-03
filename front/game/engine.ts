@@ -4,6 +4,7 @@ import {
   CreateGame,
   JoinGame,
   MovePlayer,
+  PlayerRefreshData,
   RefreshState,
   SERVER_COMMAND,
 } from '../../common/websocket_messages';
@@ -35,6 +36,7 @@ export class Engine {
               (cmd as RefreshState).x,
               (cmd as RefreshState).y,
               (cmd as RefreshState).elements,
+              (cmd as RefreshState).players,
               (cmd as RefreshState).id,
               (cmd as RefreshState).score,
               (cmd as RefreshState).hp
@@ -112,15 +114,16 @@ export class Engine {
   }
 
   refreshArena(
-    x: number,
-    y: number,
+    centerX: number,
+    centerY: number,
     elements: Array<ArenaElement>,
+    players: Array<PlayerRefreshData>,
     gameId: string,
     score: number,
     hp: number
   ) {
     if (this.playerId) {
-      this.renderer.renderArena({ x, y }, elements, {
+      this.renderer.renderArena({ x: centerX, y: centerY }, elements, players, {
         id: gameId,
         hp,
         playerId: this.playerId,

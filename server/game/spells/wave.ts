@@ -14,7 +14,7 @@ export class WaveSpell implements ISpell {
   }
 
   async run(game: Game, caster: Player): Promise<void> {
-    game.elements = game.elements.concat(
+    game.arenaElements = game.arenaElements.concat(
       this.getWaveElements(this.type, caster)
     );
   }

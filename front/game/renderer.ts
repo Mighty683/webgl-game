@@ -1,4 +1,5 @@
 import { CenterCoordinates } from '../../common/types';
+import { PlayerRefreshData } from '../../common/websocket_messages';
 import { ArenaElement } from '../../server/game/arenaElement';
 
 export type GameState = {
@@ -50,6 +51,7 @@ export class Renderer {
   renderArena(
     center: CenterCoordinates,
     elements: Array<ArenaElement>,
+    players: Array<PlayerRefreshData>,
     state?: GameState
   ) {
     this.fillBackground(state);
@@ -58,6 +60,14 @@ export class Renderer {
         this.c.beginPath();
         this.c.fillStyle = el.color;
         this.c.fillRect(...this.getFieldRect(center, el.x, el.y));
+        this.c.closePath();
+      }
+    });
+    players.forEach((player) => {
+      if (player.color) {
+        this.c.beginPath();
+        this.c.fillStyle = player.color;
+        this.c.fillRect(...this.getFieldRect(center, player.x, player.y));
         this.c.closePath();
       }
     });
