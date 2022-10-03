@@ -1,143 +1,146 @@
-import { Direction, Element } from '../../common/types';
-import { PlayerSocket } from '../playerSocket';
-import { AreaSpell } from './areaSpell';
+import { Element } from '../../common/types';
+import { Game } from '../game';
+import { Player } from '../player';
+import { AreaEffectElement } from './areaSpell';
 import { getElementColor } from './elementsHelper';
-const DMG = 50;
-const DURATION = 1;
-export function getWaveElements(type: Element, creator: PlayerSocket) {
-  let elements: Array<AreaSpell> = new Array();
-  let gamePlayer = creator.gamePlayer;
-  switch (gamePlayer?.direction) {
-    case 'down':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y - 1,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y - 2,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y - 3,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    case 'up':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y + 1,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y + 2,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y + 3,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    case 'left':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x - 1,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x - 2,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x - 3,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    case 'right':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x + 1,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x + 2,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x + 3,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    default:
-      break;
+import { ISpell } from './spell';
+
+export class WaveSpell implements ISpell {
+  static DMG = 50;
+  static DURATION = 1;
+  private type: Element;
+  constructor(type: Element) {
+    this.type = type;
   }
-  return elements;
+
+  async run(game: Game, caster: Player): Promise<void> {
+    game.elements = game.elements.concat(
+      this.getWaveElements(this.type, caster)
+    );
+  }
+
+  private getWaveElements(type: Element, caster: Player) {
+    let elements: Array<AreaEffectElement> = new Array();
+    switch (caster?.direction) {
+      case 'down':
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y - 1,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y - 2,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y - 3,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      case 'up':
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y + 1,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y + 2,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y + 3,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      case 'left':
+        elements.push(
+          new AreaEffectElement(
+            caster.x - 1,
+            caster.y,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x - 2,
+            caster.y,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x - 3,
+            caster.y,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      case 'right':
+        elements.push(
+          new AreaEffectElement(
+            caster.x + 1,
+            caster.y,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x + 2,
+            caster.y,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        elements.push(
+          new AreaEffectElement(
+            caster.x + 3,
+            caster.y,
+            WaveSpell.DURATION,
+            WaveSpell.DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      default:
+        break;
+    }
+    return elements;
+  }
 }

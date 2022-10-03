@@ -1,8 +1,7 @@
 import { ArenaElement } from '../arenaElement';
 import { Player } from '../player';
-import { PlayerSocket } from '../playerSocket';
 
-export class AreaSpell implements ArenaElement {
+export class AreaEffectElement implements ArenaElement {
   x: number;
   y: number;
   duration: number;
@@ -11,19 +10,16 @@ export class AreaSpell implements ArenaElement {
   type = 'area_spell';
   active: boolean;
   canMoveHere = true;
-  creator: PlayerSocket;
   constructor(
     x: number,
     y: number,
     duration: number,
     damage: number,
-    color: string,
-    creator: PlayerSocket
+    color: string
   ) {
     this.color = color;
     this.x = x;
     this.y = y;
-    this.creator = creator;
     this.duration = duration;
     this.damage = damage;
     this.active = true;
@@ -37,9 +33,6 @@ export class AreaSpell implements ArenaElement {
   playerEffect(player: Player) {
     if (player.active) {
       player.reduceHp(this.damage);
-      if (!player.active) {
-        this.creator.addKill();
-      }
     }
   }
 }

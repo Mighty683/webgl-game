@@ -1,62 +1,72 @@
-import { Direction, Element } from '../../common/types';
-import { PlayerSocket } from '../playerSocket';
-import { AreaSpell } from './areaSpell';
+import { Element } from '../../common/types';
+import { Game } from '../game';
+import { Player } from '../player';
+import { AreaEffectElement } from './areaSpell';
 import { getElementColor } from './elementsHelper';
+import { ISpell } from './spell';
 const DMG = 50;
 const DURATION = 10;
 
-export function getFieldElements(type: Element, creator: PlayerSocket) {
-  let elements: Array<AreaSpell> = new Array();
-  let gamePlayer = creator.gamePlayer;
-  switch (gamePlayer?.direction) {
-    case 'down':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y - 1,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    case 'up':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x,
-          gamePlayer.y + 1,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    case 'left':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x - 1,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
-    case 'right':
-      elements.push(
-        new AreaSpell(
-          gamePlayer.x + 1,
-          gamePlayer.y,
-          DURATION,
-          DMG,
-          getElementColor(type),
-          creator
-        )
-      );
-      break;
+export class FieldSpell implements ISpell {
+  static DMG = 50;
+  static DURATION = 10;
+  private type: Element;
+  constructor(type: Element) {
+    this.type = type;
   }
-  return elements;
+  async run(game: Game, caster: Player): Promise<void> {
+    game.elements = game.elements.concat(
+      this.getFieldElements(this.type, caster)
+    );
+  }
+  private getFieldElements(type: Element, caster: Player) {
+    let elements: Array<AreaEffectElement> = new Array();
+    switch (caster?.direction) {
+      case 'down':
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y - 1,
+            DURATION,
+            DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      case 'up':
+        elements.push(
+          new AreaEffectElement(
+            caster.x,
+            caster.y + 1,
+            DURATION,
+            DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      case 'left':
+        elements.push(
+          new AreaEffectElement(
+            caster.x - 1,
+            caster.y,
+            DURATION,
+            DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+      case 'right':
+        elements.push(
+          new AreaEffectElement(
+            caster.x + 1,
+            caster.y,
+            DURATION,
+            DMG,
+            getElementColor(type)
+          )
+        );
+        break;
+    }
+    return elements;
+  }
 }

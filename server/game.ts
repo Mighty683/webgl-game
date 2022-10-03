@@ -3,18 +3,26 @@ import { RefreshState } from '../common/websocket_messages';
 import { ArenaElement } from './arenaElement';
 import { Player } from './player';
 import { PlayerSocket } from './playerSocket';
-import { getFieldElements } from './spells/field';
-import { getWaveElements } from './spells/wave';
+
+import { ISpell } from './spells/spell';
+import { FieldSpell } from './spells/field';
+import { WaveSpell } from './spells/wave';
 
 const TICK_TIME = 300;
 export class Game {
   elements: Array<ArenaElement>;
+  spells: Map<string, ISpell>;
   interval?: NodeJS.Timeout;
   playersSockets: Array<PlayerSocket>;
   id: string;
   constructor() {
     this.elements = new Array();
     this.playersSockets = new Array();
+    this.spells = new Map();
+    this.spells.set('fire_wave', new WaveSpell('fire'));
+    this.spells.set('ice_wave', new WaveSpell('ice'));
+    this.spells.set('fire_field', new FieldSpell('fire'));
+    this.spells.set('ice_field', new FieldSpell('ice'));
     // TODO: Proper id generation
     this.id = Math.random().toString(36).substr(0, 6);
   }
@@ -49,21 +57,9 @@ export class Game {
   }
   castSpell(playerSocket: PlayerSocket, spell: string) {
     if (playerSocket.gamePlayer?.active) {
-      if (spell === 'fire_wave') {
-        let wave = getWaveElements('fire', playerSocket);
-        this.elements = this.elements.concat(wave);
-      }
-      if (spell === 'ice_wave') {
-        let wave = getWaveElements('ice', playerSocket);
-        this.elements = this.elements.concat(wave);
-      }
-      if (spell === 'fire_field') {
-        let wave = getFieldElements('fire', playerSocket);
-        this.elements = this.elements.concat(wave);
-      }
-      if (spell === 'ice_field') {
-        let wave = getFieldElements('ice', playerSocket);
-        this.elements = this.elements.concat(wave);
+      let spellInstance = this.spells.get(spell);
+      if (spellInstance) {
+        spellInstance.run(this, playerSocket.gamePlayer);
       }
     }
   }

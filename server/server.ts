@@ -68,10 +68,10 @@ export class Server {
       let cmd = JSON.parse(message.toString()) as PlayerCommand;
       switch (cmd.cmd) {
         case 'move_player':
-          game.movePlayer(player, (cmd as MovePlayer).direction);
+          game.movePlayer(player, cmd.direction);
           break;
         case 'cast_spell':
-          game.castSpell(player, (cmd as CastSpell).spell);
+          game.castSpell(player, cmd.spell);
           break;
       }
     });
