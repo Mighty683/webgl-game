@@ -31,6 +31,9 @@ export type PlayerCommand = MovePlayer | CastSpell | JoinGame | CreateGame;
 export type RefreshState = {
   cmd: 'refresh_state';
   id: string;
+  x: number;
+  y: number;
+  hp: number;
   elements: Array<ArenaElement>;
   score: number;
 };

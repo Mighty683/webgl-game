@@ -32,9 +32,12 @@ export class Engine {
             break;
           case 'refresh_state':
             this.refreshArena(
+              (cmd as RefreshState).x,
+              (cmd as RefreshState).y,
               (cmd as RefreshState).elements,
               (cmd as RefreshState).id,
-              (cmd as RefreshState).score
+              (cmd as RefreshState).score,
+              (cmd as RefreshState).hp
             );
             break;
           case 'close_game':
@@ -59,11 +62,11 @@ export class Engine {
   }
 
   joinGame(gameId: string) {
-    let createGameCommand: JoinGame = {
+    let joinGameCommand: JoinGame = {
       cmd: 'join_game',
       id: gameId,
     };
-    this.ws.send(JSON.stringify(createGameCommand));
+    this.ws.send(JSON.stringify(joinGameCommand));
   }
 
   setPlayerId(id: string) {
@@ -108,17 +111,21 @@ export class Engine {
     this.ws.send(JSON.stringify(cmd));
   }
 
-  refreshArena(elements: Array<ArenaElement>, gameId: string, score: number) {
+  refreshArena(
+    x: number,
+    y: number,
+    elements: Array<ArenaElement>,
+    gameId: string,
+    score: number,
+    hp: number
+  ) {
     if (this.playerId) {
-      let player = elements.find((el) => el.id === this.playerId) as Player;
-      if (player) {
-        this.renderer.renderArena({ x: player.x, y: player.y }, elements, {
-          id: gameId,
-          hp: player.hp,
-          playerId: player.id,
-          score,
-        });
-      }
+      this.renderer.renderArena({ x, y }, elements, {
+        id: gameId,
+        hp,
+        playerId: this.playerId,
+        score,
+      });
     }
   }
 }

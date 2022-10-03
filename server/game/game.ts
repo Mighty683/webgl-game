@@ -2,7 +2,6 @@ import { Direction } from '../../common/types';
 import { RefreshState } from '../../common/websocket_messages';
 import { ArenaElement } from './arenaElement';
 import { Player } from './player';
-import { PlayerSocket } from '../playerSocket';
 
 import { ISpell } from './spells/spell';
 import { FieldSpell } from './spells/field';
@@ -13,11 +12,11 @@ export class Game {
   elements: Array<ArenaElement>;
   spells: Map<string, ISpell>;
   interval?: NodeJS.Timeout;
-  playersSockets: Array<PlayerSocket>;
+  players: Set<Player>;
   id: string;
   constructor() {
     this.elements = new Array();
-    this.playersSockets = new Array();
+    this.players = new Set();
     this.spells = new Map();
     this.spells.set('fire_wave', new WaveSpell('fire'));
     this.spells.set('ice_wave', new WaveSpell('ice'));
@@ -26,8 +25,7 @@ export class Game {
     // TODO: Proper id generation
     this.id = Math.random().toString(36).substr(0, 6);
   }
-  movePlayer(player: PlayerSocket, direction: Direction) {
-    let gamePlayer = player.gamePlayer;
+  movePlayer(gamePlayer: Player, direction: Direction) {
     if (gamePlayer && gamePlayer.active && !gamePlayer.moved) {
       switch (direction) {
         case 'up':
@@ -55,17 +53,15 @@ export class Game {
       (e) => player !== e && e.x === x && e.y === y && !e.canMoveHere
     );
   }
-  castSpell(playerSocket: PlayerSocket, spell: string) {
-    if (playerSocket.gamePlayer?.active) {
-      let spellInstance = this.spells.get(spell);
-      if (spellInstance) {
-        spellInstance.run(this, playerSocket.gamePlayer);
-      }
+  castSpell(caster: Player, spell: string) {
+    let spellInstance = this.spells.get(spell);
+    if (spellInstance) {
+      spellInstance.run(this, caster);
     }
   }
-  removePlayer(player: PlayerSocket) {
-    this.playersSockets.splice(this.playersSockets.indexOf(player), 1);
-    if (player.gamePlayer) this.removeElement(player.gamePlayer);
+  removePlayer(player: Player) {
+    this.players.delete(player);
+    this.removeElement(player);
   }
   removeElement(el: ArenaElement) {
     this.elements.splice(this.elements.indexOf(el), 1);
@@ -79,48 +75,28 @@ export class Game {
      * - Elements onTick
      */
     this.elements.forEach((el) => {
-      this.playersSockets.forEach((playerSocket) => {
-        if (playerSocket.gamePlayer === el) {
+      this.players.forEach((gamePlayer) => {
+        if (gamePlayer === el) {
           return;
         }
-        if (
-          playerSocket.gamePlayer?.x === el.x &&
-          playerSocket.gamePlayer?.y === el.y
-        ) {
-          el.playerEffect && el.playerEffect(playerSocket.gamePlayer);
-        }
-        if (!playerSocket.gamePlayer?.active) {
-          this.placePlayer(0, 0, playerSocket);
+        if (gamePlayer.x === el.x && gamePlayer.y === el.y) {
+          el.playerEffect && el.playerEffect(gamePlayer);
         }
       });
       el.onTick && el.onTick();
     });
     this.elements = this.elements.filter((el) => el.active);
   }
-  placePlayer(x: number, y: number, playerSocket: PlayerSocket) {
-    let gamePlayer = new Player(x, y, playerSocket.id);
-    playerSocket.setGamePlayer(gamePlayer);
+  addPlayer() {
+    let gamePlayer = new Player(0, 0);
+    this.players.add(gamePlayer);
     this.elements.push(gamePlayer);
     return gamePlayer;
   }
-  addPlayer(playerSocket: PlayerSocket) {
-    let gamePlayer = this.placePlayer(0, 0, playerSocket);
-    this.playersSockets.push(playerSocket);
-    this.elements.push(gamePlayer);
-    return gamePlayer;
-  }
-  initGame() {
+  initGame(onTick: () => void) {
     this.interval = setInterval(() => {
-      this.playersSockets.forEach((player) => {
-        let cmd: RefreshState = {
-          cmd: 'refresh_state',
-          id: this.id,
-          elements: this.elements,
-          score: player.score,
-        };
-        this.gameTick();
-        player.socket.send(JSON.stringify(cmd));
-      });
+      this.gameTick();
+      onTick();
     }, TICK_TIME);
   }
 }

@@ -4,7 +4,6 @@ import { ArenaElement } from './arenaElement';
 export class Player implements ArenaElement {
   x: number;
   y: number;
-  id: string;
   hp: number;
   moved: boolean;
   direction: Direction;
@@ -14,11 +13,10 @@ export class Player implements ArenaElement {
   color?: string | undefined;
   canMoveHere = false;
   score: number;
-  constructor(x: number, y: number, id: string) {
+  constructor(x: number, y: number) {
     this.color = '#F5CBA7';
     this.x = x;
     this.y = y;
-    this.id = id;
     this.hp = 100;
     this.direction = 'right';
     this.moved = false;
