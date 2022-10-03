@@ -1,5 +1,5 @@
 import { CenterCoordinates } from '../../common/types';
-import { ArenaElement } from '../../server/arenaElement';
+import { ArenaElement } from '../../server/game/arenaElement';
 
 export type GameState = {
   hp: number;

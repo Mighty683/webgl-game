@@ -1,4 +1,4 @@
-import { Element } from '../../common/types';
+import { Element } from '../../../common/types';
 import { Game } from '../game';
 import { Player } from '../player';
 import { AreaEffectElement } from './areaSpell';

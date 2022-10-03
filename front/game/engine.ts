@@ -7,8 +7,8 @@ import {
   RefreshState,
   SERVER_COMMAND,
 } from '../../common/websocket_messages';
-import { ArenaElement } from '../../server/arenaElement';
-import { Player } from '../../server/player';
+import { ArenaElement } from '../../server/game/arenaElement';
+import { Player } from '../../server/game/player';
 import { Renderer } from './renderer';
 const HEIGHT = 600;
 const WIDTH = 1200;

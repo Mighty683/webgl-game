@@ -9,7 +9,7 @@ import {
   SERVER_COMMAND,
   SetPlayerId,
 } from '../common/websocket_messages';
-import { Game } from './game';
+import { Game } from './game/game';
 import { PlayerSocket } from './playerSocket';
 
 export class Server {

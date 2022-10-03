@@ -1,8 +1,8 @@
-import { Direction } from '../common/types';
-import { RefreshState } from '../common/websocket_messages';
+import { Direction } from '../../common/types';
+import { RefreshState } from '../../common/websocket_messages';
 import { ArenaElement } from './arenaElement';
 import { Player } from './player';
-import { PlayerSocket } from './playerSocket';
+import { PlayerSocket } from '../playerSocket';
 
 import { ISpell } from './spells/spell';
 import { FieldSpell } from './spells/field';

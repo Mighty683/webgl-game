@@ -1,4 +1,4 @@
-import { Direction } from '../common/types';
+import { Direction } from '../../common/types';
 import { ArenaElement } from './arenaElement';
 
 export class Player implements ArenaElement {
@@ -13,6 +13,7 @@ export class Player implements ArenaElement {
   sprite?: string | undefined;
   color?: string | undefined;
   canMoveHere = false;
+  score: number;
   constructor(x: number, y: number, id: string) {
     this.color = '#F5CBA7';
     this.x = x;
@@ -22,6 +23,7 @@ export class Player implements ArenaElement {
     this.direction = 'right';
     this.moved = false;
     this.active = true;
+    this.score = 0;
   }
   move(x: number, y: number) {
     if (x != this.x) {
@@ -45,5 +47,8 @@ export class Player implements ArenaElement {
     if (this.hp <= 0) {
       this.active = false;
     }
+  }
+  addKill() {
+    this.score++;
   }
 }

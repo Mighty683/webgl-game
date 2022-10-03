@@ -1,4 +1,4 @@
-import { Element } from '../../common/types';
+import { Element } from '../../../common/types';
 export function getElementColor(element: Element): string {
   switch (element) {
     case 'fire':

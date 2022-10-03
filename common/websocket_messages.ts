@@ -1,4 +1,4 @@
-import { ArenaElement } from '../server/arenaElement';
+import { ArenaElement } from '../server/game/arenaElement';
 import { Direction } from './types';
 
 /**
