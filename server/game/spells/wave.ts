@@ -29,7 +29,8 @@ export class WaveSpell implements ISpell {
             caster.y - 1,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -38,7 +39,8 @@ export class WaveSpell implements ISpell {
             caster.y - 2,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -47,7 +49,8 @@ export class WaveSpell implements ISpell {
             caster.y - 3,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
@@ -58,7 +61,8 @@ export class WaveSpell implements ISpell {
             caster.y + 1,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -67,7 +71,8 @@ export class WaveSpell implements ISpell {
             caster.y + 2,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -76,7 +81,8 @@ export class WaveSpell implements ISpell {
             caster.y + 3,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
@@ -87,7 +93,8 @@ export class WaveSpell implements ISpell {
             caster.y,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -96,7 +103,8 @@ export class WaveSpell implements ISpell {
             caster.y,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -105,7 +113,8 @@ export class WaveSpell implements ISpell {
             caster.y,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
@@ -116,7 +125,8 @@ export class WaveSpell implements ISpell {
             caster.y,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -125,7 +135,8 @@ export class WaveSpell implements ISpell {
             caster.y,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         elements.push(
@@ -134,7 +145,8 @@ export class WaveSpell implements ISpell {
             caster.y,
             WaveSpell.DURATION,
             WaveSpell.DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;

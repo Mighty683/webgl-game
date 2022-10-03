@@ -29,7 +29,8 @@ export class FieldSpell implements ISpell {
             caster.y - 1,
             DURATION,
             DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
@@ -40,7 +41,8 @@ export class FieldSpell implements ISpell {
             caster.y + 1,
             DURATION,
             DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
@@ -51,7 +53,8 @@ export class FieldSpell implements ISpell {
             caster.y,
             DURATION,
             DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
@@ -62,7 +65,8 @@ export class FieldSpell implements ISpell {
             caster.y,
             DURATION,
             DMG,
-            getElementColor(type)
+            getElementColor(type),
+            caster
           )
         );
         break;
