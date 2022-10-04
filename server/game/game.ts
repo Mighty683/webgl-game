@@ -5,19 +5,21 @@ import { Player } from './player';
 import { ISpell } from './spells/spell';
 import { FieldSpell } from './spells/field';
 import { WaveSpell } from './spells/wave';
-import { ArenaElement } from './types';
+import { ArenaElement, GameSpells } from './types';
 
-const TICK_TIME = 500;
 export class Game {
+  static defaultTickTime = 500;
   arenaElements: Array<ArenaElement>;
   spells: Map<string, ISpell>;
   interval?: NodeJS.Timeout;
   players: Set<Player>;
   id: string;
-  constructor() {
+  tickTime: number;
+  constructor(tickTime?: number) {
+    this.tickTime = tickTime || Game.defaultTickTime;
     this.arenaElements = new Array();
     this.players = new Set();
-    this.spells = new Map();
+    this.spells = new Map<GameSpells, ISpell>();
     this.spells.set('fire_wave', new WaveSpell('fire'));
     this.spells.set('ice_wave', new WaveSpell('ice'));
     this.spells.set('fire_field', new FieldSpell('fire'));
@@ -53,7 +55,7 @@ export class Game {
       (e) => player !== e && e.x === x && e.y === y && !e.canMoveHere
     );
   }
-  castSpell(caster: Player, spell: string) {
+  castSpell(caster: Player, spell: GameSpells) {
     let spellInstance = this.spells.get(spell);
     if (spellInstance) {
       spellInstance.run(this, caster);
@@ -93,10 +95,15 @@ export class Game {
     this.players.add(gamePlayer);
     return gamePlayer;
   }
-  initGame(onTick: () => void) {
-    this.interval = setInterval(() => {
+  startGameTicks(finishTickCallback: () => void) {
+    // TODO: Rewrite
+    this.interval = global.setInterval(() => {
       this.gameTick();
-      onTick();
-    }, TICK_TIME);
+      finishTickCallback();
+    }, this.tickTime);
+  }
+
+  dispose() {
+    if (this.interval) global.clearInterval(this.interval);
   }
 }

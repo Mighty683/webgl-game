@@ -10,6 +10,7 @@ import {
 } from '../../common/websocket_messages';
 import { ArenaElement } from '../../server/game/arenaElement';
 import { Player } from '../../server/game/player';
+import { GameSpells } from '../../server/game/types';
 import { Renderer } from './renderer';
 const HEIGHT = 600;
 const WIDTH = 1200;
@@ -97,7 +98,7 @@ export class Engine {
     }
   }
 
-  castSpell(spell: string) {
+  castSpell(spell: GameSpells) {
     let cmd: CastSpell = {
       cmd: 'cast_spell',
       spell,

@@ -1,5 +1,5 @@
 import { Player } from '../server/game/player';
-import { ArenaElement } from '../server/game/types';
+import { ArenaElement, GameSpells } from '../server/game/types';
 import { Direction } from './types';
 
 /**
@@ -12,7 +12,7 @@ export type MovePlayer = {
 
 export type CastSpell = {
   cmd: 'cast_spell';
-  spell: string;
+  spell: GameSpells;
 };
 
 export type CreateGame = {

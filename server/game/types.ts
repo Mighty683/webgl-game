@@ -15,3 +15,5 @@ export interface ArenaElement extends Tickable {
   id?: string;
   playerEffect?: (player: Player) => void;
 }
+
+export type GameSpells = 'fire_wave' | 'ice_wave' | 'fire_field' | 'ice_field';

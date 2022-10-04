@@ -2,6 +2,7 @@ import { Direction } from '../../common/types';
 import { Tickable } from './types';
 
 export class Player implements Tickable {
+  public static defaultHp = 100;
   x: number;
   y: number;
   hp: number;
@@ -17,7 +18,7 @@ export class Player implements Tickable {
     this.color = '#F5CBA7';
     this.x = x;
     this.y = y;
-    this.hp = 100;
+    this.hp = Player.defaultHp;
     this.direction = 'right';
     this.moved = false;
     this.active = true;
