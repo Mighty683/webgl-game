@@ -36,7 +36,7 @@ export class Server {
       switch (cmd.cmd) {
         case 'create_game':
           let createdGame = this.createGame();
-          createdGame.initGame(() => {
+          createdGame.initGame(async () => {
             let gamePlayersMap = this.gamesPlayers.get(createdGame.id);
             if (gamePlayersMap) {
               Array.from(gamePlayersMap.keys()).forEach((playerId) => {

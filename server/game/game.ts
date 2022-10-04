@@ -66,7 +66,7 @@ export class Game {
   removeElement(el: ArenaElement) {
     this.arenaElements.splice(this.arenaElements.indexOf(el), 1);
   }
-  gameTick() {
+  async gameTick() {
     /**
      * Order:
      * - Elements player effects
