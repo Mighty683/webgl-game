@@ -8,7 +8,7 @@ describe('game engine', () => {
   function getGameTickGenerator(
     gameToHandleTicks: Game
   ): Generator<Promise<undefined>, never, unknown> {
-    let generatorFactory = function* () {
+    let pauseGeneratorFunction = function* () {
       let resolveTickPromise: () => void = () => {};
       gameToHandleTicks.startGameTicks(() => {
         resolveTickPromise();
@@ -21,7 +21,7 @@ describe('game engine', () => {
       }
     };
 
-    return generatorFactory();
+    return pauseGeneratorFunction();
   }
 
   beforeEach(() => {
@@ -58,19 +58,19 @@ describe('game engine', () => {
     //given
     let p1 = testGame.addPlayer();
     let p2 = testGame.addPlayer();
-    let gameTickGenerator = getGameTickGenerator(testGame);
+    let gameTickPauseGenerator = getGameTickGenerator(testGame);
 
     //when
     testGame.movePlayer(p1, 'up');
-    await gameTickGenerator.next().value;
+    await gameTickPauseGenerator.next().value;
     testGame.movePlayer(p1, 'up');
-    await gameTickGenerator.next().value;
+    await gameTickPauseGenerator.next().value;
     testGame.movePlayer(p2, 'up');
-    await gameTickGenerator.next().value;
+    await gameTickPauseGenerator.next().value;
     testGame.castSpell(p2, 'ice_wave');
-    await gameTickGenerator.next().value;
+    await gameTickPauseGenerator.next().value;
     testGame.castSpell(p2, 'ice_wave');
-    await gameTickGenerator.next().value;
+    await gameTickPauseGenerator.next().value;
 
     //then
     expect(p1.hp).toBe(Player.defaultHp - WaveSpell.DMG * 2);
