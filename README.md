@@ -37,7 +37,7 @@ Commands:
 
 ### Ideas
 
-#### Spatial Partition
+#### Spatial Partition (started partially)
 
 - http://gameprogrammingpatterns.com/spatial-partition.html
 - https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374
