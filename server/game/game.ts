@@ -1,5 +1,4 @@
 import { Direction } from '../../common/types';
-import { RefreshState } from '../../common/websocket_messages';
 import { Player } from './player';
 
 import { ISpell } from './spells/spell';
@@ -63,9 +62,9 @@ export class Game {
   }
   removePlayer(player: Player) {
     this.players.delete(player);
-    this.removeElement(player);
+    this.removeElementArenaElement(player);
   }
-  removeElement(el: ArenaElement) {
+  removeElementArenaElement(el: ArenaElement) {
     this.arenaElements.splice(this.arenaElements.indexOf(el), 1);
   }
   async gameTick() {

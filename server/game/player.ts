@@ -1,8 +1,12 @@
 import { Direction } from '../../common/types';
-import { Tickable } from './types';
+import { ArenaElement, Tickable } from './types';
 
-export class Player implements Tickable {
+export class Player implements Tickable, ArenaElement {
+  static isPlayer(unknown: unknown): unknown is Player {
+    return (unknown as any).type === 'player';
+  }
   public static defaultHp = 100;
+
   x: number;
   y: number;
   hp: number;

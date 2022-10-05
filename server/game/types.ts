@@ -3,17 +3,19 @@ export interface Tickable {
   onTick?: () => void;
 }
 
-export interface ArenaElement extends Tickable {
+export interface ArenaElement extends Tickable, Point {
   sprite?: string;
   color?: string;
-  type: String;
+  type: string;
   active: boolean;
   canMoveHere: boolean;
-  hp?: number;
-  x: number;
-  y: number;
   id?: string;
   playerEffect?: (player: Player) => void;
+}
+
+export interface Point {
+  x: number;
+  y: number;
 }
 
 export type GameSpells = 'fire_wave' | 'ice_wave' | 'fire_field' | 'ice_field';
