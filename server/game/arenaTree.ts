@@ -1,11 +1,11 @@
 import { ArenaElement, Point } from './types';
 
-export class ArenaTree {
+export class ArenaTree<Element extends Point = Point> {
   public static NODE_OBJECT_COUNT_LIMIT = 10;
   public static MAX_LEVEL = 20;
   public level: number;
-  public nodes: Array<ArenaTree> = [];
-  public points: Array<Point> = [];
+  public nodes: Array<ArenaTree<Element>> = [];
+  public points: Array<Element> = [];
   public bounds: ArenaTreeNodeBounds;
   constructor(level: number, bounds: ArenaTreeNodeBounds) {
     this.level = level;
@@ -65,11 +65,22 @@ export class ArenaTree {
     );
   }
 
-  public findNode(point: Point): ArenaTree | void {
+  public findNode(point: Element): ArenaTree<Element> | void {
     return this.nodes.find((node) => node.bounds.isInside(point));
   }
 
-  public insert(point: Point) {
+  public flatten(): Element[] {
+    if (this.nodes) {
+      return this.nodes.reduce<Element[]>(
+        (acc, node) => acc.concat(node.flatten()),
+        []
+      );
+    } else {
+      return this.points;
+    }
+  }
+
+  public insert(point: Element) {
     if (this.nodes.length) {
       this.insertIntoProperNode(point);
     } else {
@@ -86,7 +97,7 @@ export class ArenaTree {
     }
   }
 
-  public remove(searchPoint: Point) {
+  public remove(searchPoint: Element) {
     if (this.nodes.length) {
       let fitNode = this.findNode(searchPoint);
       if (fitNode) {
@@ -97,9 +108,9 @@ export class ArenaTree {
     }
   }
 
-  public getAt(searchPoint: Point): Array<Point> {
+  public getAt(searchPoint: Point): Array<Element> {
     if (this.nodes.length) {
-      return this.nodes.reduce<Point[]>(
+      return this.nodes.reduce<Element[]>(
         (acc, node) => acc.concat(node.getAt(searchPoint)),
         []
       );
@@ -110,7 +121,7 @@ export class ArenaTree {
     }
   }
 
-  private insertIntoProperNode(point: Point) {
+  private insertIntoProperNode(point: Element) {
     if (this.bounds.isInside(point)) {
       let fitNode = this.findNode(point);
       if (fitNode) {

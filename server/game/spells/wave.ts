@@ -14,8 +14,8 @@ export class WaveSpell implements ISpell {
   }
 
   async run(game: Game, caster: Player): Promise<void> {
-    game.arenaElements = game.arenaElements.concat(
-      this.getWaveElements(this.type, caster)
+    this.getWaveElements(this.type, caster).forEach((el) =>
+      game.arenaSpellsTree.insert(el)
     );
   }
 

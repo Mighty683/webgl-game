@@ -120,7 +120,7 @@ export class Server {
     let cmd: RefreshState = {
       cmd: 'refresh_state',
       id: game.id,
-      elements: game.arenaElements,
+      elements: game.arenaElementsTree,
       players: Array.from(game.players.values()).map(
         ({ x, y, sprite, color }) => ({
           x,

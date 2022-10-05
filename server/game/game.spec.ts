@@ -54,7 +54,7 @@ describe('game engine', () => {
     expect(p1.x).toEqual(-1);
   });
 
-  xit('should handle player collision', async () => {
+  it('should handle player collision', async () => {
     //given
     let p1 = testGame.addPlayer();
     let p2 = testGame.addPlayer();

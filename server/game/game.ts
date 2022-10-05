@@ -4,19 +4,31 @@ import { Player } from './player';
 import { ISpell } from './spells/spell';
 import { FieldSpell } from './spells/field';
 import { WaveSpell } from './spells/wave';
-import { ArenaElement, GameSpells } from './types';
+import { ArenaElement, GameSpells, SpellArenaElement } from './types';
+import { ArenaTree, ArenaTreeNodeBounds } from './arenaTree';
 
 export class Game {
   static defaultTickTime = 500;
-  arenaElements: Array<ArenaElement>;
+  static arenaSize = 10000;
+  arenaElementsTree: ArenaTree<ArenaElement>;
+  arenaSpellsTree: ArenaTree<SpellArenaElement>;
+  playersArenaTree: ArenaTree<Player>;
   spells: Map<string, ISpell>;
   interval?: NodeJS.Timeout;
   players: Set<Player>;
   id: string;
   tickTime: number;
   constructor(tickTime?: number) {
+    let arenaBounds = new ArenaTreeNodeBounds(
+      -Game.arenaSize,
+      Game.arenaSize,
+      Game.arenaSize,
+      -Game.arenaSize
+    );
     this.tickTime = tickTime || Game.defaultTickTime;
-    this.arenaElements = new Array();
+    this.playersArenaTree = new ArenaTree<Player>(0, arenaBounds);
+    this.arenaElementsTree = new ArenaTree<ArenaElement>(0, arenaBounds);
+    this.arenaSpellsTree = new ArenaTree<SpellArenaElement>(0, arenaBounds);
     this.players = new Set();
     this.spells = new Map<GameSpells, ISpell>();
     this.spells.set('fire_wave', new WaveSpell('fire'));
@@ -30,28 +42,39 @@ export class Game {
     if (gamePlayer && gamePlayer.active && !gamePlayer.moved) {
       switch (direction) {
         case 'up':
-          this.checkMove(gamePlayer, gamePlayer.x, gamePlayer.y + 1) &&
+          this.canMoveHere(gamePlayer.x, gamePlayer.y + 1) &&
             gamePlayer.move(gamePlayer.x, gamePlayer.y + 1);
           break;
         case 'down':
-          this.checkMove(gamePlayer, gamePlayer.x, gamePlayer.y - 1) &&
+          this.canMoveHere(gamePlayer.x, gamePlayer.y - 1) &&
             gamePlayer.move(gamePlayer.x, gamePlayer.y - 1);
           break;
         case 'right':
-          this.checkMove(gamePlayer, gamePlayer.x + 1, gamePlayer.y) &&
+          this.canMoveHere(gamePlayer.x + 1, gamePlayer.y) &&
             gamePlayer.move(gamePlayer.x + 1, gamePlayer.y);
           break;
         case 'left':
-          this.checkMove(gamePlayer, gamePlayer.x - 1, gamePlayer.y) &&
+          this.canMoveHere(gamePlayer.x - 1, gamePlayer.y) &&
             gamePlayer.move(gamePlayer.x - 1, gamePlayer.y);
           break;
       }
+
+      this.playersArenaTree.remove(gamePlayer);
+      this.playersArenaTree.insert(gamePlayer);
     }
   }
-  checkMove(player: Player, x: number, y: number): boolean {
-    // Any solid object on coordinate prevents move
-    return !this.arenaElements.find(
-      (e) => player !== e && e.x === x && e.y === y && !e.canMoveHere
+  canMoveHere(x: number, y: number): boolean {
+    return (
+      this.arenaElementsTree
+        .getAt({
+          x,
+          y,
+        })
+        .every((point) => point.canMoveHere) &&
+      !this.playersArenaTree.getAt({
+        x,
+        y,
+      }).length
     );
   }
   castSpell(caster: Player, spell: GameSpells) {
@@ -62,36 +85,28 @@ export class Game {
   }
   removePlayer(player: Player) {
     this.players.delete(player);
-    this.removeElementArenaElement(player);
+    this.playersArenaTree.remove(player);
   }
-  removeElementArenaElement(el: ArenaElement) {
-    this.arenaElements.splice(this.arenaElements.indexOf(el), 1);
-  }
-  async gameTick() {
+
+  gameTick() {
     /**
      * Order:
-     * - Elements player effects
+     * - Spells players effect
      * - Player attacks (TODO)
-     * - Check if player is alive
      * - Elements onTick
+     * - Cleanup inactive elements
      */
-    this.arenaElements.forEach((el) => {
-      this.players.forEach((gamePlayer) => {
-        if (gamePlayer === el) {
-          return;
-        }
-        if (gamePlayer.x === el.x && gamePlayer.y === el.y) {
-          el.playerEffect && el.playerEffect(gamePlayer);
-        }
-      });
-      el.onTick && el.onTick();
+    Array.from(this.players.values()).forEach((player) => {
+      let spellsAtPlayerPosition = this.arenaSpellsTree.getAt(player);
+      spellsAtPlayerPosition.forEach((spell) => spell.playerEffect(player));
     });
-    this.players.forEach((p) => p.onTick());
-    this.arenaElements = this.arenaElements.filter((el) => el.active);
+    this.players.forEach((player) => player.onTick());
+    this.arenaSpellsTree.flatten().forEach((spell) => spell.onTick());
   }
   addPlayer() {
     let gamePlayer = new Player(0, 0);
     this.players.add(gamePlayer);
+    this.playersArenaTree.insert(gamePlayer);
     return gamePlayer;
   }
   startGameTicks(finishTickCallback: () => void) {

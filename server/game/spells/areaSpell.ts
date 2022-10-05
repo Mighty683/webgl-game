@@ -1,7 +1,7 @@
 import { Player } from '../player';
-import { ArenaElement } from '../types';
+import { SpellArenaElement } from '../types';
 
-export class AreaEffectElement implements ArenaElement {
+export class AreaEffectElement implements SpellArenaElement {
   x: number;
   y: number;
   duration: number;
