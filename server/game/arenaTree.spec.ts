@@ -2,7 +2,7 @@ import { ArenaTree, ArenaTreeNodeBounds } from './arenaTree';
 import { Point } from './types';
 
 describe('ArenaTree', () => {
-  ArenaTree.MAX_LEVEL = 2;
+  ArenaTree.MAX_LEVEL = 3;
   ArenaTree.NODE_OBJECT_COUNT_LIMIT = 2;
 
   describe('split', () => {
@@ -16,20 +16,20 @@ describe('ArenaTree', () => {
       expect(rootNode.nodes.every((node) => node.level === 1)).toBe(true);
 
       expect(rootNode.nodes[0].bounds.center).toEqual({
-        x: -50,
+        x: -50.5,
         y: 50,
       });
       expect(rootNode.nodes[1].bounds.center).toEqual({
         x: 50,
-        y: 50,
+        y: 50.5,
       });
       expect(rootNode.nodes[2].bounds.center).toEqual({
-        x: 50,
+        x: 50.5,
         y: -50,
       });
       expect(rootNode.nodes[3].bounds.center).toEqual({
         x: -50,
-        y: -50,
+        y: -50.5,
       });
     });
   });
@@ -76,6 +76,8 @@ describe('ArenaTree', () => {
   });
   describe('getAt', () => {
     it('should return proper points', () => {
+      let arenaSize = 100000;
+      //given
       let pointA: Point = {
         x: 0,
         y: 0,
@@ -90,18 +92,25 @@ describe('ArenaTree', () => {
       };
       let rootNode = new ArenaTree(
         0,
-        new ArenaTreeNodeBounds(-10000, 100000, 100000, -100000)
+        new ArenaTreeNodeBounds(-arenaSize, arenaSize, arenaSize, -arenaSize)
       );
       rootNode.insert(pointA);
       rootNode.insert(pointADouble);
       rootNode.insert(pointB);
-
+      //then
       expect(
         rootNode.getAt({
           x: 0,
           y: 0,
         })[0]
       ).toBe(pointA);
+      expect(
+        rootNode.getAt({
+          x: 0,
+          y: 0,
+        })[1]
+      ).toBe(pointADouble);
+      expect(rootNode.getAt({ x: 1, y: 1 }).length).toBe(0);
     });
   });
 });

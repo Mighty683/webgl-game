@@ -23,7 +23,9 @@ export class ArenaTree {
       this.level + 1,
       new ArenaTreeNodeBounds(
         this.bounds.x1,
-        this.bounds.center.x,
+        this.bounds.center.x % 1
+          ? this.bounds.center.x
+          : this.bounds.center.x - 1,
         this.bounds.y1,
         this.bounds.center.y
       )
@@ -34,13 +36,17 @@ export class ArenaTree {
         this.bounds.center.x,
         this.bounds.x2,
         this.bounds.y1,
-        this.bounds.center.y
+        this.bounds.center.y % 1
+          ? this.bounds.center.y
+          : this.bounds.center.y + 1
       )
     );
     this.nodes[2] = new ArenaTree(
       this.level + 1,
       new ArenaTreeNodeBounds(
-        this.bounds.center.x,
+        this.bounds.center.x % 1
+          ? this.bounds.center.x
+          : this.bounds.center.x + 1,
         this.bounds.x2,
         this.bounds.center.y,
         this.bounds.y2
@@ -51,7 +57,9 @@ export class ArenaTree {
       new ArenaTreeNodeBounds(
         this.bounds.x1,
         this.bounds.center.x,
-        this.bounds.center.y,
+        this.bounds.center.y % 1
+          ? this.bounds.center.y
+          : this.bounds.center.y - 1,
         this.bounds.y2
       )
     );
@@ -92,11 +100,18 @@ export class ArenaTree {
   }
 
   private insertIntoProperNode(point: Point) {
-    let fitNode = this.findNode(point);
-    if (fitNode) {
-      fitNode.insert(point);
+    if (this.bounds.isInside(point)) {
+      let fitNode = this.findNode(point);
+      if (fitNode) {
+        fitNode.insert(point);
+      } else if (this.nodes[0]) {
+        // This case happens for points in center of bounds.
+        this.nodes[0].insert(point);
+      } else {
+        throw new Error('Point not fitting any node!');
+      }
     } else {
-      throw new Error('Point not fitting any node!');
+      throw new Error('Point not in bounds range');
     }
   }
 }
