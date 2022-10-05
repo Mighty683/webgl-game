@@ -34,6 +34,24 @@ describe('ArenaTree', () => {
     });
   });
 
+  describe('remove', () => {
+    it('should remove point', () => {
+      let rootNode = new ArenaTree(
+        0,
+        new ArenaTreeNodeBounds(-100, 100, 100, -100)
+      );
+      let point: Point = {
+        x: 0,
+        y: 0,
+      };
+
+      rootNode.insert(point);
+      rootNode.remove(point);
+
+      expect(rootNode.getAt(point).length).toBe(0);
+    });
+  });
+
   describe('findNode', () => {
     it('should find proper node for point', () => {
       let rootNode = new ArenaTree(

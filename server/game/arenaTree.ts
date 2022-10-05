@@ -1,7 +1,7 @@
 import { ArenaElement, Point } from './types';
 
 export class ArenaTree {
-  public static NODE_OBJECT_COUNT_LIMIT = 1000;
+  public static NODE_OBJECT_COUNT_LIMIT = 10;
   public static MAX_LEVEL = 20;
   public level: number;
   public nodes: Array<ArenaTree> = [];
@@ -83,6 +83,17 @@ export class ArenaTree {
           throw new Error('Reached Arena Tree capacity level');
         }
       }
+    }
+  }
+
+  public remove(searchPoint: Point) {
+    if (this.nodes.length) {
+      let fitNode = this.findNode(searchPoint);
+      if (fitNode) {
+        fitNode.remove(searchPoint);
+      }
+    } else {
+      this.points.splice(this.points.indexOf(searchPoint), 1);
     }
   }
 
