@@ -94,7 +94,6 @@ export class Game {
      * - Spells players effect
      * - Player attacks (TODO)
      * - Elements onTick
-     * - Cleanup inactive elements
      */
     Array.from(this.players.values()).forEach((player) => {
       let spellsAtPlayerPosition = this.arenaSpellsTree.getAt(player);

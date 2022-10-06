@@ -6,7 +6,7 @@ import { getElementColor } from './elementsHelper';
 import { ISpell } from './spell';
 
 export class WaveSpell implements ISpell {
-  static DMG = 50;
+  static DMG = 10;
   static DURATION = 1;
   private type: Element;
   constructor(type: Element) {

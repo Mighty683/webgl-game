@@ -3,14 +3,13 @@ import { ArenaElement, Point } from './types';
 export class ArenaTreeNode<Element extends Point = Point> {
   public static NODE_OBJECT_COUNT_LIMIT = 100;
   public nodes: Array<ArenaTreeNode<Element>> = [];
-  public points: Array<Element> = [];
+  public points: Set<Element> = new Set();
   public bounds: ArenaTreeNodeBounds;
   constructor(bounds: ArenaTreeNodeBounds) {
     this.bounds = bounds;
   }
 
   public clear(): void {
-    this.points = [];
     this.nodes.forEach((node) => node.clear());
     this.nodes = [];
   }
@@ -69,7 +68,7 @@ export class ArenaTreeNode<Element extends Point = Point> {
         []
       );
     } else {
-      return this.points;
+      return Array.from(this.points.values());
     }
   }
 
@@ -77,12 +76,12 @@ export class ArenaTreeNode<Element extends Point = Point> {
     if (this.nodes.length) {
       this.insertIntoProperNode(point);
     } else {
-      this.points.push(point);
-      if (this.points.length > ArenaTreeNode.NODE_OBJECT_COUNT_LIMIT) {
+      this.points.add(point);
+      if (this.points.size > ArenaTreeNode.NODE_OBJECT_COUNT_LIMIT) {
         if (this.bounds.width >= 2) {
           this.split();
           this.points.forEach((point) => this.insertIntoProperNode(point));
-          this.points = [];
+          this.points = new Set();
         }
       }
     }
@@ -95,7 +94,7 @@ export class ArenaTreeNode<Element extends Point = Point> {
         fitNode.remove(searchPoint);
       }
     } else {
-      this.points.splice(this.points.indexOf(searchPoint), 1);
+      this.points.delete(searchPoint);
     }
   }
 
@@ -106,7 +105,7 @@ export class ArenaTreeNode<Element extends Point = Point> {
         []
       );
     } else {
-      return this.points.filter(
+      return Array.from(this.points.values()).filter(
         (point) => searchPoint.x === point.x && searchPoint.y === point.y
       );
     }

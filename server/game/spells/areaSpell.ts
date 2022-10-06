@@ -10,6 +10,7 @@ export class AreaEffectElement implements SpellArenaElement {
   color: string;
   type = 'area_spell';
   canMoveHere = true;
+  active = true;
   caster: Player;
   constructor(
     x: number,
@@ -27,13 +28,17 @@ export class AreaEffectElement implements SpellArenaElement {
     this.caster = caster;
   }
   onTick(game: Game) {
-    this.duration--;
-    if (this.duration <= 0) {
+    if (!this.active) {
       game.arenaSpellsTree.remove(this);
+    } else {
+      this.duration--;
+      if (this.duration <= 0) {
+        this.active = false;
+      }
     }
   }
   playerEffect(player: Player) {
-    if (player.active) {
+    if (player.active && this.active) {
       player.reduceHp(this.damage);
       if (player.hp <= 0) {
         this.caster.addKill();

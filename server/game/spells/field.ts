@@ -4,11 +4,9 @@ import { Player } from '../player';
 import { AreaEffectElement } from './areaSpell';
 import { getElementColor } from './elementsHelper';
 import { ISpell } from './spell';
-const DMG = 50;
-const DURATION = 10;
 
 export class FieldSpell implements ISpell {
-  static DMG = 50;
+  static DMG = 5;
   static DURATION = 10;
   private type: Element;
   constructor(type: Element) {
@@ -27,8 +25,8 @@ export class FieldSpell implements ISpell {
           new AreaEffectElement(
             caster.x,
             caster.y - 1,
-            DURATION,
-            DMG,
+            FieldSpell.DURATION,
+            FieldSpell.DMG,
             getElementColor(type),
             caster
           )
@@ -39,8 +37,8 @@ export class FieldSpell implements ISpell {
           new AreaEffectElement(
             caster.x,
             caster.y + 1,
-            DURATION,
-            DMG,
+            FieldSpell.DURATION,
+            FieldSpell.DMG,
             getElementColor(type),
             caster
           )
@@ -51,8 +49,8 @@ export class FieldSpell implements ISpell {
           new AreaEffectElement(
             caster.x - 1,
             caster.y,
-            DURATION,
-            DMG,
+            FieldSpell.DURATION,
+            FieldSpell.DMG,
             getElementColor(type),
             caster
           )
@@ -63,8 +61,8 @@ export class FieldSpell implements ISpell {
           new AreaEffectElement(
             caster.x + 1,
             caster.y,
-            DURATION,
-            DMG,
+            FieldSpell.DURATION,
+            FieldSpell.DMG,
             getElementColor(type),
             caster
           )
