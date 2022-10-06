@@ -18,6 +18,7 @@ export class Player implements Tickable, ArenaElement {
   color?: string | undefined;
   canMoveHere = false;
   score: number;
+
   constructor(x: number, y: number) {
     this.color = '#F5CBA7';
     this.x = x;

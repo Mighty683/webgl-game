@@ -101,7 +101,7 @@ export class Game {
       spellsAtPlayerPosition.forEach((spell) => spell.playerEffect(player));
     });
     this.players.forEach((player) => player.onTick());
-    this.arenaSpellsTree.flatten().forEach((spell) => spell.onTick());
+    this.arenaSpellsTree.flatten().forEach((spell) => spell.onTick(this));
   }
   addPlayer() {
     let gamePlayer = new Player(0, 0);

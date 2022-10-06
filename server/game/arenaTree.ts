@@ -1,7 +1,7 @@
 import { ArenaElement, Point } from './types';
 
 export class ArenaTreeNode<Element extends Point = Point> {
-  public static NODE_OBJECT_COUNT_LIMIT = 10;
+  public static NODE_OBJECT_COUNT_LIMIT = 100;
   public nodes: Array<ArenaTreeNode<Element>> = [];
   public points: Array<Element> = [];
   public bounds: ArenaTreeNodeBounds;
@@ -63,7 +63,7 @@ export class ArenaTreeNode<Element extends Point = Point> {
   }
 
   public flatten(): Element[] {
-    if (this.nodes) {
+    if (this.nodes.length) {
       return this.nodes.reduce<Element[]>(
         (acc, node) => acc.concat(node.flatten()),
         []

@@ -1,13 +1,13 @@
+import { Game } from './game';
 import { Player } from './player';
 export interface Tickable {
-  onTick: () => void;
+  onTick: (game: Game) => void;
 }
 
 export interface ArenaElement extends Point {
   sprite?: string;
   color?: string;
   type: string;
-  active: boolean;
   canMoveHere: boolean;
   id?: string;
 }

@@ -1,3 +1,4 @@
+import { Game } from '../game';
 import { Player } from '../player';
 import { SpellArenaElement } from '../types';
 
@@ -8,7 +9,6 @@ export class AreaEffectElement implements SpellArenaElement {
   damage: number;
   color: string;
   type = 'area_spell';
-  active: boolean;
   canMoveHere = true;
   caster: Player;
   constructor(
@@ -24,14 +24,13 @@ export class AreaEffectElement implements SpellArenaElement {
     this.y = y;
     this.duration = duration;
     this.damage = damage;
-    this.active = true;
     this.caster = caster;
   }
-  onTick() {
+  onTick(game: Game) {
+    this.duration--;
     if (this.duration <= 0) {
-      this.active = false;
+      game.arenaSpellsTree.remove(this);
     }
-    this.duration = this.duration - 1;
   }
   playerEffect(player: Player) {
     if (player.active) {
