@@ -5,14 +5,14 @@ import { ISpell } from './spells/spell';
 import { FieldSpell } from './spells/field';
 import { WaveSpell } from './spells/wave';
 import { ArenaElement, GameSpells, SpellArenaElement } from './types';
-import { ArenaTree, ArenaTreeNodeBounds } from './arenaTree';
+import { ArenaTreeNode, ArenaTreeNodeBounds } from './arenaTree';
 
 export class Game {
   static defaultTickTime = 500;
   static arenaSize = 10000;
-  arenaElementsTree: ArenaTree<ArenaElement>;
-  arenaSpellsTree: ArenaTree<SpellArenaElement>;
-  playersArenaTree: ArenaTree<Player>;
+  arenaElementsTree: ArenaTreeNode<ArenaElement>;
+  arenaSpellsTree: ArenaTreeNode<SpellArenaElement>;
+  playersArenaTree: ArenaTreeNode<Player>;
   spells: Map<string, ISpell>;
   interval?: NodeJS.Timeout;
   players: Set<Player>;
@@ -26,9 +26,9 @@ export class Game {
       -Game.arenaSize
     );
     this.tickTime = tickTime || Game.defaultTickTime;
-    this.playersArenaTree = new ArenaTree<Player>(0, arenaBounds);
-    this.arenaElementsTree = new ArenaTree<ArenaElement>(0, arenaBounds);
-    this.arenaSpellsTree = new ArenaTree<SpellArenaElement>(0, arenaBounds);
+    this.playersArenaTree = new ArenaTreeNode<Player>(arenaBounds);
+    this.arenaElementsTree = new ArenaTreeNode<ArenaElement>(arenaBounds);
+    this.arenaSpellsTree = new ArenaTreeNode<SpellArenaElement>(arenaBounds);
     this.players = new Set();
     this.spells = new Map<GameSpells, ISpell>();
     this.spells.set('fire_wave', new WaveSpell('fire'));

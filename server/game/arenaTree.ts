@@ -1,14 +1,11 @@
 import { ArenaElement, Point } from './types';
 
-export class ArenaTree<Element extends Point = Point> {
+export class ArenaTreeNode<Element extends Point = Point> {
   public static NODE_OBJECT_COUNT_LIMIT = 10;
-  public static MAX_LEVEL = 20;
-  public level: number;
-  public nodes: Array<ArenaTree<Element>> = [];
+  public nodes: Array<ArenaTreeNode<Element>> = [];
   public points: Array<Element> = [];
   public bounds: ArenaTreeNodeBounds;
-  constructor(level: number, bounds: ArenaTreeNodeBounds) {
-    this.level = level;
+  constructor(bounds: ArenaTreeNodeBounds) {
     this.bounds = bounds;
   }
 
@@ -19,8 +16,7 @@ export class ArenaTree<Element extends Point = Point> {
   }
 
   public split() {
-    this.nodes[0] = new ArenaTree(
-      this.level + 1,
+    this.nodes[0] = new ArenaTreeNode(
       new ArenaTreeNodeBounds(
         this.bounds.x1,
         this.bounds.center.x % 1
@@ -30,8 +26,7 @@ export class ArenaTree<Element extends Point = Point> {
         this.bounds.center.y
       )
     );
-    this.nodes[1] = new ArenaTree(
-      this.level + 1,
+    this.nodes[1] = new ArenaTreeNode(
       new ArenaTreeNodeBounds(
         this.bounds.center.x,
         this.bounds.x2,
@@ -41,8 +36,7 @@ export class ArenaTree<Element extends Point = Point> {
           : this.bounds.center.y + 1
       )
     );
-    this.nodes[2] = new ArenaTree(
-      this.level + 1,
+    this.nodes[2] = new ArenaTreeNode(
       new ArenaTreeNodeBounds(
         this.bounds.center.x % 1
           ? this.bounds.center.x
@@ -52,8 +46,7 @@ export class ArenaTree<Element extends Point = Point> {
         this.bounds.y2
       )
     );
-    this.nodes[3] = new ArenaTree(
-      this.level + 1,
+    this.nodes[3] = new ArenaTreeNode(
       new ArenaTreeNodeBounds(
         this.bounds.x1,
         this.bounds.center.x,
@@ -65,7 +58,7 @@ export class ArenaTree<Element extends Point = Point> {
     );
   }
 
-  public findNode(point: Element): ArenaTree<Element> | void {
+  public findNode(point: Element): ArenaTreeNode<Element> | void {
     return this.nodes.find((node) => node.bounds.isInside(point));
   }
 
@@ -85,13 +78,11 @@ export class ArenaTree<Element extends Point = Point> {
       this.insertIntoProperNode(point);
     } else {
       this.points.push(point);
-      if (this.points.length > ArenaTree.NODE_OBJECT_COUNT_LIMIT) {
-        if (this.level < ArenaTree.MAX_LEVEL) {
+      if (this.points.length > ArenaTreeNode.NODE_OBJECT_COUNT_LIMIT) {
+        if (this.bounds.width >= 2) {
           this.split();
           this.points.forEach((point) => this.insertIntoProperNode(point));
           this.points = [];
-        } else {
-          throw new Error('Reached Arena Tree capacity level');
         }
       }
     }

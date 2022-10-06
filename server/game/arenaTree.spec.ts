@@ -1,19 +1,15 @@
-import { ArenaTree, ArenaTreeNodeBounds } from './arenaTree';
+import { ArenaTreeNode, ArenaTreeNodeBounds } from './arenaTree';
 import { Point } from './types';
 
 describe('ArenaTree', () => {
-  ArenaTree.MAX_LEVEL = 3;
-  ArenaTree.NODE_OBJECT_COUNT_LIMIT = 2;
+  ArenaTreeNode.NODE_OBJECT_COUNT_LIMIT = 2;
 
   describe('split', () => {
     it('should split into proper nodes', () => {
-      let rootNode = new ArenaTree(
-        0,
+      let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-100, 100, 100, -100)
       );
       rootNode.split();
-
-      expect(rootNode.nodes.every((node) => node.level === 1)).toBe(true);
 
       expect(rootNode.nodes[0].bounds.center).toEqual({
         x: -50.5,
@@ -32,12 +28,23 @@ describe('ArenaTree', () => {
         y: -50.5,
       });
     });
+
+    it('should not split into nodes smaller than 1', () => {
+      let rootNode = new ArenaTreeNode(new ArenaTreeNodeBounds(-1, 1, 1, -1));
+
+      rootNode.insert({ x: 0, y: 0 });
+      rootNode.insert({ x: 0, y: 0 });
+      rootNode.insert({ x: 0, y: 0 });
+      rootNode.insert({ x: 0, y: 0 });
+
+      expect(rootNode.nodes[0].nodes.length).toBe(0);
+      expect(rootNode.nodes[0].points.length).toBe(4);
+    });
   });
 
   describe('remove', () => {
     it('should remove point', () => {
-      let rootNode = new ArenaTree(
-        0,
+      let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-100, 100, 100, -100)
       );
       let point: Point = {
@@ -54,8 +61,7 @@ describe('ArenaTree', () => {
 
   describe('findNode', () => {
     it('should find proper node for point', () => {
-      let rootNode = new ArenaTree(
-        0,
+      let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-100, 100, 100, -100)
       );
       rootNode.split();
@@ -71,8 +77,7 @@ describe('ArenaTree', () => {
 
   describe('insert', () => {
     it('should insert elements into proper places', () => {
-      let rootNode = new ArenaTree(
-        0,
+      let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-10, 10, 10, -10)
       );
       rootNode.insert({
@@ -108,8 +113,7 @@ describe('ArenaTree', () => {
         x: 1000,
         y: 2000,
       };
-      let rootNode = new ArenaTree(
-        0,
+      let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-arenaSize, arenaSize, arenaSize, -arenaSize)
       );
       rootNode.insert(pointA);
