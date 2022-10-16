@@ -95,6 +95,6 @@ describe('game engine', () => {
 
     //then
     expect(p1.hp).toBe(Player.defaultHp - WaveSpell.DMG * 2);
-    expect(p1.active).toBe(false);
+    expect(p1.active).toBe(true);
   });
 });

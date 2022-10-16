@@ -38,7 +38,7 @@ describe('ArenaTree', () => {
       rootNode.insert({ x: 0, y: 0 });
 
       expect(rootNode.nodes[0].nodes.length).toBe(0);
-      expect(rootNode.nodes[0].points.length).toBe(4);
+      expect(rootNode.nodes[0].points.size).toBe(4);
     });
   });
 
@@ -92,9 +92,9 @@ describe('ArenaTree', () => {
         x: 2,
         y: 2,
       });
-      expect(rootNode.nodes[0].points.length).toBe(1);
-      expect(rootNode.nodes[1].points.length).toBe(2);
-      expect(rootNode.points).toEqual([]);
+      expect(rootNode.nodes[0].points.size).toBe(1);
+      expect(rootNode.nodes[1].points.size).toBe(2);
+      expect(rootNode.points.size).toBe(0);
     });
   });
   describe('getAt', () => {
