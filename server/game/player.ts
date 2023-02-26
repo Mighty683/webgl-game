@@ -1,7 +1,7 @@
 import { Direction } from '../../common/types';
-import { ArenaElement, Tickable } from './types';
+import { ArenaField, Tickable } from './types';
 
-export class Player implements Tickable, ArenaElement {
+export class Player implements Tickable, ArenaField {
   static isPlayer(unknown: unknown): unknown is Player {
     return (unknown as any).type === 'player';
   }

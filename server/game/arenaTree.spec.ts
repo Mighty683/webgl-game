@@ -32,10 +32,10 @@ describe('ArenaTree', () => {
     it('should not split into nodes smaller than 1', () => {
       let rootNode = new ArenaTreeNode(new ArenaTreeNodeBounds(-1, 1, 1, -1));
 
-      rootNode.insert({ x: 0, y: 0 });
-      rootNode.insert({ x: 0, y: 0 });
-      rootNode.insert({ x: 0, y: 0 });
-      rootNode.insert({ x: 0, y: 0 });
+      rootNode.add({ x: 0, y: 0 });
+      rootNode.add({ x: 0, y: 0 });
+      rootNode.add({ x: 0, y: 0 });
+      rootNode.add({ x: 0, y: 0 });
 
       expect(rootNode.nodes[0].nodes.length).toBe(0);
       expect(rootNode.nodes[0].points.size).toBe(4);
@@ -52,7 +52,7 @@ describe('ArenaTree', () => {
         y: 0,
       };
 
-      rootNode.insert(point);
+      rootNode.add(point);
       rootNode.remove(point);
 
       expect(rootNode.getAt(point).length).toBe(0);
@@ -67,7 +67,7 @@ describe('ArenaTree', () => {
       rootNode.split();
 
       expect(
-        rootNode.findNode({
+        rootNode.findChildNode({
           x: 1,
           y: 1,
         })
@@ -80,15 +80,15 @@ describe('ArenaTree', () => {
       let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-10, 10, 10, -10)
       );
-      rootNode.insert({
+      rootNode.add({
         x: 0,
         y: 0,
       });
-      rootNode.insert({
+      rootNode.add({
         x: 1,
         y: 1,
       });
-      rootNode.insert({
+      rootNode.add({
         x: 2,
         y: 2,
       });
@@ -116,9 +116,9 @@ describe('ArenaTree', () => {
       let rootNode = new ArenaTreeNode(
         new ArenaTreeNodeBounds(-arenaSize, arenaSize, arenaSize, -arenaSize)
       );
-      rootNode.insert(pointA);
-      rootNode.insert(pointADouble);
-      rootNode.insert(pointB);
+      rootNode.add(pointA);
+      rootNode.add(pointADouble);
+      rootNode.add(pointB);
       //then
       expect(
         rootNode.getAt({

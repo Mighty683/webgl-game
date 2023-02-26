@@ -1,10 +1,13 @@
 import { Game } from './game';
 import { Player } from './player';
+
 export interface Tickable {
-  onTick: (game: Game) => void;
+  onTick: TickCallback;
 }
 
-export interface ArenaElement extends Point {
+export type TickCallback = (game: Game) => void;
+
+export interface ArenaField extends Point {
   sprite?: string;
   color?: string;
   type: string;
@@ -12,11 +15,23 @@ export interface ArenaElement extends Point {
   id?: string;
 }
 
-export interface SpellArenaElement extends TickableArenaElement {
+export function isPlayerEffectField(
+  field: ArenaField
+): field is PlayerEffectArenaField {
+  return 'playerEffect' in field;
+}
+
+export interface PlayerEffectArenaField extends TickableArenaField {
   playerEffect: (player: Player) => void;
 }
 
-export interface TickableArenaElement extends ArenaElement, Tickable {}
+export function isTickableField(
+  field: ArenaField
+): field is TickableArenaField {
+  return 'onTick' in field;
+}
+
+export interface TickableArenaField extends ArenaField, Tickable {}
 
 export interface Point {
   x: number;

@@ -13,9 +13,10 @@ export class FieldSpell implements ISpell {
     this.type = type;
   }
   async run(game: Game, caster: Player): Promise<void> {
-    this.getFieldElements(this.type, caster).forEach((el) =>
-      game.arenaSpellsTree.insert(el)
-    );
+    this.getFieldElements(this.type, caster).forEach((el) => {
+      game.addField(el);
+      game.addTickable(el);
+    });
   }
   private getFieldElements(type: Element, caster: Player) {
     let elements: Array<AreaEffectElement> = new Array();

@@ -1,4 +1,4 @@
-import { ArenaElement, Point } from './types';
+import { ArenaField, Point } from './types';
 
 export class ArenaTreeNode<Element extends Point = Point> {
   public static NODE_OBJECT_COUNT_LIMIT = 100;
@@ -57,7 +57,7 @@ export class ArenaTreeNode<Element extends Point = Point> {
     );
   }
 
-  public findNode(point: Element): ArenaTreeNode<Element> | void {
+  public findChildNode(point: Element): ArenaTreeNode<Element> | void {
     return this.nodes.find((node) => node.bounds.isInside(point));
   }
 
@@ -72,24 +72,17 @@ export class ArenaTreeNode<Element extends Point = Point> {
     }
   }
 
-  public insert(point: Element) {
+  public add(point: Element) {
     if (this.nodes.length) {
-      this.insertIntoProperNode(point);
+      this.registerPointToChildDone(point);
     } else {
-      this.points.add(point);
-      if (this.points.size > ArenaTreeNode.NODE_OBJECT_COUNT_LIMIT) {
-        if (this.bounds.width >= 2) {
-          this.split();
-          this.points.forEach((point) => this.insertIntoProperNode(point));
-          this.points = new Set();
-        }
-      }
+      this.registerPoint(point);
     }
   }
 
   public remove(searchPoint: Element) {
     if (this.nodes.length) {
-      let fitNode = this.findNode(searchPoint);
+      let fitNode = this.findChildNode(searchPoint);
       if (fitNode) {
         fitNode.remove(searchPoint);
       }
@@ -111,19 +104,30 @@ export class ArenaTreeNode<Element extends Point = Point> {
     }
   }
 
-  private insertIntoProperNode(point: Element) {
+  private registerPointToChildDone(point: Element) {
     if (this.bounds.isInside(point)) {
-      let fitNode = this.findNode(point);
-      if (fitNode) {
-        fitNode.insert(point);
+      let targetNode = this.findChildNode(point);
+      if (targetNode) {
+        targetNode.add(point);
       } else if (this.nodes[0]) {
         // This case happens for points in center of bounds.
-        this.nodes[0].insert(point);
+        this.nodes[0].add(point);
       } else {
         throw new Error('Point not fitting any node!');
       }
     } else {
       throw new Error('Point not in bounds range');
+    }
+  }
+
+  private registerPoint(point: Element) {
+    this.points.add(point);
+    if (this.points.size > ArenaTreeNode.NODE_OBJECT_COUNT_LIMIT) {
+      if (this.bounds.width >= 2) {
+        this.split();
+        this.points.forEach((point) => this.registerPointToChildDone(point));
+        this.points = new Set();
+      }
     }
   }
 }

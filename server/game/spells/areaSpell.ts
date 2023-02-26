@@ -1,8 +1,8 @@
 import { Game } from '../game';
 import { Player } from '../player';
-import { SpellArenaElement } from '../types';
+import { PlayerEffectArenaField } from '../types';
 
-export class AreaEffectElement implements SpellArenaElement {
+export class AreaEffectElement implements PlayerEffectArenaField {
   x: number;
   y: number;
   duration: number;
@@ -26,10 +26,12 @@ export class AreaEffectElement implements SpellArenaElement {
     this.duration = duration;
     this.damage = damage;
     this.caster = caster;
+    this.onTick = this.onTick.bind(this);
   }
   onTick(game: Game) {
     if (!this.active) {
-      game.arenaSpellsTree.remove(this);
+      game.removeField(this);
+      game.removeTickable(this);
     } else {
       this.duration--;
       if (this.duration <= 0) {

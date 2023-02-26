@@ -14,9 +14,10 @@ export class WaveSpell implements ISpell {
   }
 
   async run(game: Game, caster: Player): Promise<void> {
-    this.getWaveElements(this.type, caster).forEach((el) =>
-      game.arenaSpellsTree.insert(el)
-    );
+    this.getWaveElements(this.type, caster).forEach((el) => {
+      game.addField(el);
+      game.addTickable(el);
+    });
   }
 
   private getWaveElements(type: Element, caster: Player) {

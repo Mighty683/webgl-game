@@ -1,5 +1,5 @@
 import { Player } from '../server/game/player';
-import { ArenaElement, GameSpells } from '../server/game/types';
+import { ArenaField, GameSpells } from '../server/game/types';
 import { Direction } from './types';
 
 /**
@@ -35,7 +35,7 @@ export type RefreshState = {
   x: number;
   y: number;
   hp: number;
-  elements: Array<ArenaElement>;
+  elements: Array<ArenaField>;
   players: Array<PlayerRefreshData>;
   score: number;
 };
