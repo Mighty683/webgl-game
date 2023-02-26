@@ -106,3 +106,5 @@ dist
 
 #Typescript out
 out
+
+.parcel-cache
